@@ -1,0 +1,13 @@
+---
+- name: Include OS specific tasks
+  hosts: project01
+  become: true
+  vars_files:
+    - "pkg.yml"
+
+  tasks:
+    - include: centos_pkg.yml
+      when: ansible_distribution == "CentOS"
+    - include: ubuntu_pkg.yml
+      when: ansible_distribution == "Ubuntu"
+...

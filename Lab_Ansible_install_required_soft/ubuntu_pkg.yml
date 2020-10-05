@@ -1,0 +1,4 @@
+---
+- name: Install based soft for Ubuntu (state=present is optional)
+  apt: name="{{ item }}" state=latest install_recommends=true update_cache=true
+...
