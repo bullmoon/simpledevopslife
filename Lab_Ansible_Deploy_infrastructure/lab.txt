@@ -1,0 +1,3 @@
+Go to https://simpledevopslife.blogspot.com/2020/04/devops-for-beginners-lab-ansible-deploy.html
+and execute:
+$ ansible-playbook -i inventory/create_hosts.yml -v create_containers.yml

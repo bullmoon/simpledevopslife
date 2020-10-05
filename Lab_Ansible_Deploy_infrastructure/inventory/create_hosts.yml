@@ -1,0 +1,29 @@
+---
+lxd:
+  hosts:
+    lxdsrv.home.lab:
+  vars:
+    ansible_user: lxdadmin
+    ansible_ssh_private_key_file: "/home/lxdadmin/.ssh/id_rsa"
+
+web:
+  hosts:
+    lab-www-stage:
+    lab-www-prod:
+    lab-www-test:
+
+blogdb:
+  hosts:
+    lab-db:
+    lab-db-test:
+
+project01:
+  children:
+    web:
+    blogdb:
+
+all:
+  vars:
+    ansible_user: ansible
+    ansible_ssh_private_key_file: "/home/ansible/.ssh/id_rsa"
+...
