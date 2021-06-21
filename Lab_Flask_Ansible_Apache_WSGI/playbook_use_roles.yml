@@ -1,0 +1,7 @@
+---
+- hosts: web
+  become: yes
+  roles:
+    - apache
+    - ansiblebit.mod_wsgi
+    - andrewrothstein.flask

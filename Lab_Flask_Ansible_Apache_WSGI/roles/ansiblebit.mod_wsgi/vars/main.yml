@@ -1,0 +1,5 @@
+---
+# vars file for ansiblebit.mod_wsgi
+item:
+  - libapache2-mod-wsgi-py3
+

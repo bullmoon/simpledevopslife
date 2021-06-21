@@ -1,0 +1,5 @@
+---
+# tasks file for ansiblebit.mod_wsgi
+- name: Install the latest version of mod_wsgi
+  apt: name="{{ item }}"
+

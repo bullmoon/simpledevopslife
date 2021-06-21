@@ -1,0 +1,5 @@
+---
+# tasks file for andrewrothstein.flask
+- name: Install the latest version of flask
+  apt: name="{{ item }}"
+
