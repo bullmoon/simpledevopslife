@@ -2,7 +2,7 @@
 - hosts: web
   become: yes
   roles:
-    - git
+    - git                   # Install git
     - apache                # Install Apache
-    - ansiblebit.mod_wsgi   # Install to Apache mod_wsgi
+    - ansiblebit.mod_wsgi   # Install mod_wsgi to Apache
     - andrewrothstein.flask # Install Flask 
