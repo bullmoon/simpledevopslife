@@ -1,0 +1,6 @@
+---
+# tasks file for git
+- name: Install the latest version of Git
+  apt:
+    name: "{{ item }}"
+    update_cache: yes

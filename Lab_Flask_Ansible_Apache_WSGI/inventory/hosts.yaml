@@ -1,0 +1,5 @@
+---
+web:
+  hosts:
+    ubuntuapachetest: 10.20.40.151
+...

@@ -1,4 +1,6 @@
 ---
 # tasks file for apache
 - name: Install the latest version of Apache
-  apt: name="{{ item }}"
+  apt:
+    name: "{{ item }}"
+    update_cache: yes

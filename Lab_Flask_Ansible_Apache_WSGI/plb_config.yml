@@ -1,0 +1,36 @@
+---
+- hosts: web
+  become: yes
+  vars:
+    workdir: /var/www/firstapp/
+    
+  tasks:
+    - name: Create WorkDir if not exist
+      file:
+        path: "{{ workdir }}"
+        state: directory
+
+    - name: Clone repo
+      ansible.builtin.git:
+        repo: https://github.com/bullmoon/flask.git
+        dest: "{{ workdir }}"
+
+    - name: Config Apache
+      copy:
+        src: configs/mod-hello.conf
+        dest: /etc/apache2/conf-available/
+      copy:
+        src: configs/hello.conf
+        dest: /etc/apache2/sites-available/
+
+    - name: Disable default site and enable project
+      ansible.builtin.shell: |
+        a2dissite 000-default.conf
+        a2ensite hello.conf
+        a2enconf mod-hello.conf
+      notify: rstrtsrvc 
+  handlers:
+  - name: rstrtsrvc
+    service:
+      name: "apache2"
+      state: restarted
