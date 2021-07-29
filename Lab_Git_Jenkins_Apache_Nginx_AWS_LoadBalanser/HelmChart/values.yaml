@@ -1,0 +1,7 @@
+apacheContainer:
+  image: bullhorn/apache:v2.5
+  replicaCount: 1
+
+nginxContainer:
+  image: bullhorn/nginx-proxy
+  replicaCount: 2

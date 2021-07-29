@@ -1,0 +1,48 @@
+### Deploy Apache as backend
+
+apiVersion : apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Release.Name }}-deployment
+  labels:
+    app: {{ .Release.Name }}-apache
+spec:
+  replicas: {{ .Values.apacheContainer.replicaCount }}
+  selector:
+    matchLabels:
+      project: {{ .Release.Name }}
+  template:
+    metadata:
+      labels:
+        project: {{ .Release.Name }}
+    spec:
+      containers:
+        - name : {{ .Release.Name }}-apache
+          image: {{ .Values.apacheContainer.image }}
+          ports:
+            - containerPort: 80
+
+---
+### Deploy Nginx as a reverse-proxy
+
+apiVersion : apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Release.Name }}-nginx-deployment
+  labels:
+    app: {{ .Release.Name }}-nginx
+spec:
+  replicas: {{ .Values.nginxContainer.replicaCount }}
+  selector:
+    matchLabels:
+      project: {{ .Release.Name }}
+  template:
+    metadata:
+      labels:
+        project: {{ .Release.Name }}
+    spec:
+      containers:
+        - name : {{ .Release.Name }}-nginx-proxy
+          image: {{ .Values.nginxContainer.image }}
+          ports:
+            - containerPort: 80

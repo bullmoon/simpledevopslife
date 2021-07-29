@@ -1,0 +1,22 @@
+apiVersion: eksctl.io/v1alpha5
+kind: ClusterConfig
+
+metadata:
+  name: labcluster
+  region: us-west-2
+
+vpc:
+  subnets:
+    private:
+      us-west-2a: { id: subnet-805b83ca }
+      us-west-2b: { id: subnet-900bb4e8 }
+      us-west-2c: { id: subnet-ad5cd5f0 }
+      us-west-2d: { id: subnet-0dd7d626 }
+
+nodeGroups:
+  - name: wrkgrp-nodes-group1
+    instanceType: t2.micro
+    desiredCapacity: 2
+  - name: wrkgrp-nodes-group2
+    instanceType: t3.micro
+    desiredCapacity: 2

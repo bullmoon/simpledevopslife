@@ -1,0 +1,16 @@
+$ docker search apache
+NAME                               DESCRIPTION                                     STARS     OFFICIAL   AUTOMATED
+httpd                              The Apache HTTP Server Project                  3525      [OK]       
+tomcat                             Apache Tomcat is an open source implementati…   3043      [OK]       
+cassandra                          Apache Cassandra is an open-source distribut…   1279      [OK]       
+maven                              Apache Maven is a software project managemen…   1211      [OK]       
+solr                               Solr is the popular, blazing-fast, open sour…   835       [OK]       
+apache/airflow                     Apache Airflow                                  250                  
+apache/nifi                        Unofficial convenience binaries and Docker i…   215                  [OK]
+apache/zeppelin                    Apache Zeppelin                                 146                  [OK]
+eboraas/apache-php                 PHP on Apache (with SSL/TLS support), built …   144                  [OK]
+eboraas/apache                     Apache (with SSL/TLS support), built on Debi…   92                   [OK]
+apacheignite/ignite                Apache Ignite - Distributed Database            77                   [OK]
+nimmis/apache-php5                 This is docker images of Ubuntu 14.04 LTS wi…   69                   [OK]
+bitnami/apache                     Bitnami Apache Docker Image                     67                   [OK]
+

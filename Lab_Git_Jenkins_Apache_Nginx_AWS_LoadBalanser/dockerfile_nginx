@@ -1,0 +1,13 @@
+# Base image
+FROM nginx
+
+# work dir
+ENV dstfldr /etc/nginx/conf.d
+
+# Install net-tools
+RUN apt update
+RUN apt install -y net-tools
+
+# copy content to workdir
+COPY ./nginx_proxy.conf $dstfldr/nginx_proxy.conf
+
