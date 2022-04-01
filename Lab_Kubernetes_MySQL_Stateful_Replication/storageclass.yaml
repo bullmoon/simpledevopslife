@@ -1,0 +1,10 @@
+---
+apiVersion: storage.k8s.io/v1
+kind: StorageClass
+metadata:
+  name: sts-nfs-repl
+provisioner: cluster.local/nfs-subdir-external-provisioner
+parameters:
+  server: nfs.vysot.ca
+  path: /srv/nfsexport
+  readOnly: "false"
