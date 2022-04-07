@@ -1,0 +1,22 @@
+pipeline {
+  agent {
+    label 'Docker'
+  }
+ // Environment {
+ //     projectName = 'Lab CI/CD pipeline'
+ //   }
+  stages {
+      stage ('Checkout from GitHub') {
+          steps {
+              deleteDir()
+              git 'https://github.com/bullmoon/hello-world.git'
+            }
+        }
+      stage ('Archive the source and deploy it in the test environment') {
+          steps {
+              sh 'tar -czvf $JENKINS_HOME/ils.$BUILD_NUMBER.tar.gz --exclude=Docker* *'
+            }
+        }
+    }
+}
+

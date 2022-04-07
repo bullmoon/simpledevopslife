@@ -1,1 +1,0 @@
-DevOps for... Lab "CI/CD pipeline. Jenkins"
