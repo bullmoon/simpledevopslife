@@ -1,0 +1,11 @@
+---
+- name: Lab "Start and stop containers"
+  hosts: 'pve.vysot.ca'
+  tasks:
+  - name: Start container
+    community.general.proxmox:
+      vmid: 104
+      api_user: '{{ pve_apiuser }}'
+      api_password: '{{ pve_apipass }}'
+      api_host: '{{ pve_api_host }}'
+      state: stopped
