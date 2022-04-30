@@ -1,0 +1,25 @@
+ansible_python_interpreter: /usr/bin/python3
+ansible_user: ansible
+ansible_ssh_private_key_file: "/home/ansible/.ssh/id_rsa"
+pve_node: pve
+pve_apiuser: ansible@pam
+pve_apipass: TQuurHzx7iAS3in
+pve_api_host: pve.vysot.ca
+pve_template: local:vztmpl/ubuntu-21.04-standard_21.04-1_amd64.tar.gz
+pve_storage: 'local-lvm'
+pve_domain: vysot.ca
+pve_proxmox_default_behavior: 'no_defaults' # 'no_defaults' or 'compatibility'
+
+###
+pve_vmid: '400'
+pve_cores: '2'
+pve_cpus: '1'
+pve_cpuunits: '1024'
+pve_hostname: '2mCPrVjGNk.vysot.ca'
+pve_password: 'simple'
+pve_netif: '{"net0":"name=eth0,ip=dhcp,ip6=dhcp,bridge=vmbr0,tag=50"}'
+pve_dns: '1.1.1.1'
+pve_state: 'started' # present, absent, stopped, started, restarted
+pve_disk: 'rootfs:8192'
+pve_memory: '1024'
+pve_pool: 'test'

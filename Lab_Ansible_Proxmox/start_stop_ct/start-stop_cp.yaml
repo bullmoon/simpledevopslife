@@ -4,8 +4,9 @@
   tasks:
   - name: Start container
     community.general.proxmox:
-      vmid: 104
+      description: "For start or stop the container change 'state' to 'started' or 'stopped'"
+      vmid: 400
       api_user: '{{ pve_apiuser }}'
       api_password: '{{ pve_apipass }}'
       api_host: '{{ pve_api_host }}'
-      state: stopped
+      state: absent

@@ -1,0 +1,45 @@
+---
+# https://docs.ansible.com/ansible/latest/collections/community/general/proxmox_module.html
+- name: Lab "Create and Destroy containers"
+  hosts: 'pve.vysot.ca'
+  tasks:
+  - name: Create new container with options
+    community.general.proxmox:
+      vmid: "{{ pve_vmid }}"
+      node: "{{ pve_node }}"
+      api_user: "{{ pve_apiuser }}"
+      api_password: "{{ pve_apipass }}"
+      api_host: "{{ pve_api_host }}"
+      password: "{{ pve_password }}"
+      hostname: "{{ pve_hostname }}"
+      ostemplate: "{{ pve_template }}"
+      storage: "{{ pve_storage }}"
+      cores: "{{ pve_cores }}"
+      cpus: "{{ pve_cpus }}"
+      cpuunits: "{{ pve_cpuunits }}"
+      memory: "{{ pve_memory }}"
+      swap: 0
+      netif: "{{ pve_netif }}"
+      nameserver: "{{ pve_dns }}"
+      pool: "{{ pve_pool }}"
+      proxmox_default_behavior: "{{ pve_proxmox_default_behavior }}"
+      searchdomain: "{{ pve_domain }}"
+      state: "{{ pve_state }}"
+      timeout: 60
+
+# https://docs.ansible.com/ansible/latest/collections/community/general/proxmox_domain_info_module.html
+  - name: List existing domains
+    community.general.proxmox_domain_info:
+      api_host: "{{ pve_api_host }}"
+      api_user: "{{ pve_apiuser }}"
+      api_password: "{{ pve_apipass }}"
+    register: proxmox_domains
+
+  - name: Retrieve information about the pve domain
+    community.general.proxmox_domain_info:
+      api_host: "{{ pve_api_host }}"
+      api_user: "{{ pve_apiuser }}"
+      api_password: "{{ pve_apipass }}"
+      domain: pve
+    register: proxmox_domain_pve
+...
