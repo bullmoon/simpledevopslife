@@ -1,1 +1,28 @@
 ---
+# https://docs.ansible.com/ansible/latest/collections/community/general/proxmox_kvm_module.html
+
+- name: Lab "Start and stop containers"
+  hosts: 'pve.vysot.ca'
+  gather_facts: 'false'
+  tasks:
+  - name: Create new VM with minimal options
+    community.general.proxmox_kvm:
+      api_user: "{{ pve_apiuser }}"
+      api_password: "{{ pve_apipass }}"
+      api_host: "{{ pve_apihost }}"
+      vmid: "{{ pve_vmid }}"
+      name: "{{ pve_name }}" # Specifies the VM name. Only used on the configuration web interface.
+      node: "{{ pve_node }}"
+      pool: "{{ pve_pool }}" # Add the new VM to the specified pool.
+      machine: "{{ pve_machine }}"
+      cores: "{{ pve_cores }}"
+      vcpus: "{{ pve_vcpus }}"
+      memory: "{{ pve_memory }}"
+      state: "{{ pve_state }}"
+      net:
+        net0: 'virtio,bridge=vmbr0,tag=50'
+        net1: 'virtio,bridge=vmbr0,tag=30'
+      ipconfig:
+        ipconfig0: 'ip=10.20.50.249/24'
+        ipconfig1: 'ip=10.20.30.249/24'
+      update: 'yes'
