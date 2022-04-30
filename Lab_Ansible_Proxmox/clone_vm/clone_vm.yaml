@@ -1,0 +1,24 @@
+---
+# https://docs.ansible.com/ansible/latest/collections/community/general/proxmox_kvm_module.html
+
+- name: Lab "Start and stop containers"
+  hosts: 'pve.vysot.ca'
+  gather_facts: 'false'
+  tasks:
+  - name: Create linked clone VM with only source VM name.
+
+    community.general.proxmox_kvm:
+      api_user    : "{{ pve_apiuser }}"
+      api_password: "{{ pve_apipass }}"
+      api_host    : "{{ pve_apihost }}"
+      node        : "{{ pve_node }}"
+      ###
+      clone       : 'arbitrary_name'
+      vmid        : 140
+      newid       : "{{ pve_newid }}"
+      name        : "{{ pve_name }}"
+      storage     : "{{ pve_storage }}"
+      format      : 'unspecified'
+      timeout     : 600
+      pool        : "{{ pve_pool }}"
+      proxmox_default_behavior: "{{ pve_proxmox_default_behavior }}"
