@@ -1,0 +1,12 @@
+# /etc/systemd/system/flask.service
+[Unit]
+Description=Gunicorn instance to serve Flask
+After=network.target
+[Service]
+User=www-data
+Group=www-data
+WorkingDirectory=/opt/project
+Environment="PATH=/opt/project/venv/bin"
+ExecStart=/opt/project/venv/bin/gunicorn --workers 3 --bind 0.0.0.0:5000 wsgi:app
+[Install]
+WantedBy=multi-user.target
