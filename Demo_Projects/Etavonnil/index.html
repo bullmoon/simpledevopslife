@@ -1,0 +1,247 @@
+<head>
+    <b:skin>
+      <style>
+        P {
+         text-indent: 1.5em; /* Отступ первой строки */
+         text-align: justify; /* Выравнивание по ширине */
+        }
+      </style>
+    </b:skin>
+  </head>
+  <div class="separator" style="clear: both;"><a href="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEjLK3CsOiU2gSYZVmLuw0JJ621icHLp9eFj4IpQ5qHh5hV-af_DXWPqmf2_MHVSjNyaU8fufz09EVOitsNQsUFVR3VV_h8L544Ac1n6wnx5uxOe_PUfLmOW2Oh-EFLV1xn58cHT-vwTKdwAlqWetidW-FiaJ5dqQie0modVUoPwlUcgj-mwkb4FFyoXnA/s217/47w5k8z4g3.png" style="display: block; padding: 1em 0; text-align: center; "><img alt="" border="0" width="200" data-original-height="177" data-original-width="217" src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEjLK3CsOiU2gSYZVmLuw0JJ621icHLp9eFj4IpQ5qHh5hV-af_DXWPqmf2_MHVSjNyaU8fufz09EVOitsNQsUFVR3VV_h8L544Ac1n6wnx5uxOe_PUfLmOW2Oh-EFLV1xn58cHT-vwTKdwAlqWetidW-FiaJ5dqQie0modVUoPwlUcgj-mwkb4FFyoXnA/s200/47w5k8z4g3.png"/></a></div>
+  <p>After interview, you can get a clarifying task. I'm going to demonstrate a sample, that I've recently got.</p>
+  <table>
+      <tbody>
+        <tr style="background-color: #cccccc;">
+          <td>
+  <code>
+  Create cicd (any cicd soft) that :<br>
+  1) create docker image (nginx + any index.html inside)<br>
+  2) upload it to docker registry<br>
+  3) deploy from docker registry to kubernetes <br>
+  4) for develop git brach deploy is done automatically , for master branch - develop by pressing a button
+  </code>
+          </td>
+        </tr>
+      </tbody>
+  </table>
+  <p>Well, let's say you were intervied. Everything was great. But suddenly, you get a message - "Could you solve one more task? And it must be in the public cloud".</p>
+  <p>Question number one is how to deploy the infrastructure - eksctl, terraform, ansible, etc. I'm sure, during the looking for a job, we are going to show not just the code, but demonstrate how it works online.</p>
+  <p>Second question is which cloud to use AWS, GCP, Azure, Blue Ocean. My practice shows, the most interest has AWS and GCP, accordingly we will deploy our infrastructure on these two.</p>
+  <p>For beginning, I'm going to use EC2 for Jenkins and AWS EKS for deployment.</p>
+<div class="separator" style="clear: both;"><a href="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEgyyPXWC_Bxebaasnfwf4Bza2ifJ5PZ_aRN7zzU-lpPCQZZ9G-rp2y5uf_Qre0xXwRBAa9O7694nEdAJCuOoimXIDufUTQJ0NMeMcCA9GpKcy0F15-eiF5IPSL8kh4BWgnKJZFLBckeZsjKlIYP9P0YwQZDTs8B7BL7cdgVnh1_vppQ62pl19NI1JKmWQ/s320/u54xtu5xzt.png" style="display: block; padding: 1em 0; text-align: center; "><img alt="" border="0" width="320" data-original-height="139" data-original-width="320" src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEgyyPXWC_Bxebaasnfwf4Bza2ifJ5PZ_aRN7zzU-lpPCQZZ9G-rp2y5uf_Qre0xXwRBAa9O7694nEdAJCuOoimXIDufUTQJ0NMeMcCA9GpKcy0F15-eiF5IPSL8kh4BWgnKJZFLBckeZsjKlIYP9P0YwQZDTs8B7BL7cdgVnh1_vppQ62pl19NI1JKmWQ/s320/u54xtu5xzt.png"/></a></div>
+<p>But first of all, I should create a new repository on GitHub</p>
+<div class="separator" style="clear: both;"><a href="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEimovbf5jiuOqvYo8hWDJtCRH-Uf0eEkzHXgK7QvOGSY7h1QfPd_92keIjOHeprrrt7sAp_NEVSvW8P7cxsg1nYz6C4f-8ji9wN2NzumOKgUijKugcTBD3eA8wzU8TMU6H83HSqNgdh6DU6EWfLy9bAu60WJ456c06nwpK2oUDtJNVq4G_tLkLeBD_1Jg/s323/ys86t96xcq.png" style="display: block; padding: 1em 0; text-align: center; "><img alt="" border="0" height="200" data-original-height="323" data-original-width="320" src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEimovbf5jiuOqvYo8hWDJtCRH-Uf0eEkzHXgK7QvOGSY7h1QfPd_92keIjOHeprrrt7sAp_NEVSvW8P7cxsg1nYz6C4f-8ji9wN2NzumOKgUijKugcTBD3eA8wzU8TMU6H83HSqNgdh6DU6EWfLy9bAu60WJ456c06nwpK2oUDtJNVq4G_tLkLeBD_1Jg/s200/ys86t96xcq.png"/></a></div>
+<p>So, let's get started.</p>
+<dl>
+    <dt>We have to:</dt>
+    <dd>create key pair for access to the instance (and save jenkins_demo.pem file in our .ssh folder)</dd>
+    <dd>create vpc, security group, and Jenkins instance</dd>
+    <dd>Config Ansible for Jenkins</dd>
+    <dd></dd>
+    <dd></dd>
+    <dd></dd>
+    <dd></dd>
+    </dl>
+    <div class="separator" style="clear: both;"><a href="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEhrJEYRx8mOizY8XOSliUL1A790Q38LT-WVb26W4Y1j-LKplIyprV3sa1d4ZJyvCcP5Ewxqn5vFH5pcl1FkRAoPYN-b-lf_9mWepvyWRhMmk_YczMcRQukFik04jLp6o2B6o50XWYwFt8tlcRPAN45bc3YSiqYOTNtxTP8vQ4Azw7uvYDrw6iVG_4ZGkA/s878/aappf5x94n.png" style="display: block; padding: 1em 0px; text-align: center;"><img alt="" border="0" data-original-height="753" data-original-width="878" height="274" src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEhrJEYRx8mOizY8XOSliUL1A790Q38LT-WVb26W4Y1j-LKplIyprV3sa1d4ZJyvCcP5Ewxqn5vFH5pcl1FkRAoPYN-b-lf_9mWepvyWRhMmk_YczMcRQukFik04jLp6o2B6o50XWYwFt8tlcRPAN45bc3YSiqYOTNtxTP8vQ4Azw7uvYDrw6iVG_4ZGkA/w320-h274/aappf5x94n.png" width="320" /></a></div>
+    <table>
+      <tbody>
+        <tr style="background-color: #cccccc;">
+          <td>
+  <code>
+    <b>$ cat variable.tf</b><br>
+  variable "AWS_REGION" {<br>
+    &nbsp;&nbsp;description = "Region of AWS VPC"<br>
+    &nbsp;&nbsp;type = string<br>
+    &nbsp;&nbsp;default = "us-west-2"<br>
+  }<br>
+  </code>
+          </td>
+        </tr>
+      </tbody>
+  </table>
+    <p></p>
+    <table>
+      <tbody>
+        <tr style="background-color: #cccccc;">
+          <td>
+  <code>
+    <b>$ cat provider.tf</b><br>
+  provider "aws" {<br>
+    &nbsp;&nbsp;region = "${var.AWS_REGION}"<br>
+  }<br>
+  </code>
+          </td>
+        </tr>
+      </tbody>
+  </table>
+    <p></p>
+    <table>
+      <tbody>
+        <tr style="background-color: #cccccc;">
+          <td>
+  <code>
+    <b>$ cat vpc.tf</b><br>
+  # https://registry.terraform.io/modules/terraform-aws-modules/vpc/aws/latest<br>
+  #<br>
+  module "vpc" {<br>
+  &nbsp;&nbsp;source = "terraform-aws-modules/vpc/aws"<br>
+  <br>
+  &nbsp;&nbsp;name = "demo-vpc"<br>
+  &nbsp;&nbsp;cidr = "10.0.0.0/16"<br>
+  <br>
+  &nbsp;&nbsp;azs             = ["us-west-2a"]<br>
+  &nbsp;&nbsp;private_subnets = ["10.0.1.0/24", "10.0.2.0/24"]<br>
+  &nbsp;&nbsp;public_subnets  = ["10.0.101.0/24"]<br>
+  <br>
+  &nbsp;&nbsp;enable_nat_gateway = true<br>
+  &nbsp;&nbsp;enable_vpn_gateway = false<br>
+  &nbsp;&nbsp;enable_dns_hostnames = true<br>
+  <br>
+  &nbsp;&nbsp;tags = {<br>
+  &nbsp;&nbsp;&nbsp;&nbsp;Terraform = "true"<br>
+  &nbsp;&nbsp;&nbsp;&nbsp;Environment = "demo"<br>
+  &nbsp;&nbsp;}<br>
+  }<br>
+  </code>
+          </td>
+        </tr>
+      </tbody>
+  </table>
+    <p></p>
+    <table>
+      <tbody>
+        <tr style="background-color: #cccccc;">
+          <td>
+  <code>
+  <b>$ cat security_group.tf</b><br>
+  # https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/security_group<br>
+  #<br>
+  resource "aws_security_group" "allow_custom_ports" {<br>
+  &nbsp;&nbsp;name        = "allow_custom_ports"<br>
+  &nbsp;&nbsp;description = "Allow ports 22, 8080 and ICMP inbound traffic"<br>
+  &nbsp;&nbsp;vpc_id      = module.vpc.vpc_id<br>
+  <br>
+  &nbsp;&nbsp;ingress {<br>
+  &nbsp;&nbsp;&nbsp;&nbsp;description      = "8080 from VPC"<br>
+  &nbsp;&nbsp;&nbsp;&nbsp;from_port        = 8080<br>
+  &nbsp;&nbsp;&nbsp;&nbsp;to_port          = 8080<br>
+  &nbsp;&nbsp;&nbsp;&nbsp;protocol         = "tcp"<br>
+  &nbsp;&nbsp;&nbsp;&nbsp;cidr_blocks      = ["0.0.0.0/0"]<br>
+  &nbsp;&nbsp;}<br>
+  <br>
+  &nbsp;&nbsp;ingress {<br>
+  &nbsp;&nbsp;&nbsp;&nbsp;description      = "SSH from VPC"<br>
+  &nbsp;&nbsp;&nbsp;&nbsp;from_port        = 22<br>
+  &nbsp;&nbsp;&nbsp;&nbsp;to_port          = 22<br>
+  &nbsp;&nbsp;&nbsp;&nbsp;protocol         = "tcp"<br>
+  &nbsp;&nbsp;&nbsp;&nbsp;cidr_blocks      = ["0.0.0.0/0"]<br>
+  &nbsp;&nbsp;}<br>
+  <br>
+  &nbsp;&nbsp;ingress {<br>
+  &nbsp;&nbsp;&nbsp;&nbsp;description      = "ICMP from VPC"<br>
+  &nbsp;&nbsp;&nbsp;&nbsp;from_port        = 8<br>
+  &nbsp;&nbsp;&nbsp;&nbsp;to_port          = 0<br>
+  &nbsp;&nbsp;&nbsp;&nbsp;protocol         = "icmp"<br>
+  &nbsp;&nbsp;&nbsp;&nbsp;cidr_blocks      = ["0.0.0.0/0"]<br>
+  &nbsp;&nbsp;}<br>
+  <br>
+  &nbsp;&nbsp;egress {<br>
+  &nbsp;&nbsp;&nbsp;&nbsp;from_port        = 0<br>
+  &nbsp;&nbsp;&nbsp;&nbsp;to_port          = 0<br>
+  &nbsp;&nbsp;&nbsp;&nbsp;protocol         = "-1"<br>
+  &nbsp;&nbsp;&nbsp;&nbsp;cidr_blocks      = ["0.0.0.0/0"]<br>
+  &nbsp;&nbsp;}<br>
+  <br>
+  &nbsp;&nbsp;tags = {<br>
+  &nbsp;&nbsp;&nbsp;&nbsp;Name = "allow_custom_ports"<br>
+  &nbsp;&nbsp;}<br>
+  }<br>
+  </code>
+          </td>
+        </tr>
+      </tbody>
+  </table>
+<p>finally, we create an instance file</p>
+<table>
+  <tbody>
+    <tr style="background-color: #cccccc;">
+      <td>
+<code>
+<b>$ cat ec2_jenkins.tf</b><br>
+# https://registry.terraform.io/modules/terraform-aws-modules/ec2-instance/aws/latest<br>
+#<br>
+module "ec2_instance" {<br>
+&nbsp;&nbsp;source  = "terraform-aws-modules/ec2-instance/aws"<br>
+&nbsp;&nbsp;version = "~> 3.0"<br>
+&nbsp;&nbsp;create = true<br>
+&nbsp;&nbsp;name = "single-jenkins-instance"<br>
+<br>
+&nbsp;&nbsp;ami                    = "ami-0ca285d4c2cda3300"<br>
+&nbsp;&nbsp;instance_type          = "t2.micro"<br>
+&nbsp;&nbsp;key_name               = "jenkins_demo"<br>
+&nbsp;&nbsp;monitoring             = false<br>
+&nbsp;&nbsp;vpc_security_group_ids = [aws_security_group.allow_custom_ports.id]<br>
+&nbsp;&nbsp;subnet_id              = module.vpc.public_subnets[0]<br>
+<br>
+&nbsp;&nbsp;tags = {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;Terraform   = "true"<br>
+&nbsp;&nbsp;&nbsp;&nbsp;Environment = "demo"<br>
+&nbsp;&nbsp;}<br>
+}<br>
+</code>
+      </td>
+    </tr>
+  </tbody>
+</table>
+<p>One more thing</p>
+<table>
+  <tbody>
+    <tr style="background-color: #cccccc;">
+      <td>
+<code>
+<b>$ cat outputs.tf<br></b>
+output "vpc_id" {<br>
+&nbsp;&nbsp;value = module.vpc.vpc_id<br>
+}<br>
+<br>
+output "private_subnets" {<br>
+&nbsp;&nbsp;value = [module.vpc.private_subnets]<br>
+}<br>
+<br>
+output "public_subnets" {<br>
+&nbsp;&nbsp;value = [module.vpc.public_subnets]<br>
+}<br>
+<br>
+output "vpc_security_group_ids" {<br>
+&nbsp;&nbsp;value = [aws_security_group.allow_custom_ports.id]<br>
+}<br>
+<br>
+output "jenkins_instance_ip" {<br>
+&nbsp;&nbsp;value = module.ec2_instance.public_ip<br>
+}<br>
+
+output "jenkins_instance_fqdn" {<br>
+&nbsp;&nbsp;value = module.ec2_instance.public_dns<br>
+}<br>
+</code>
+      </td>
+    </tr>
+  </tbody>
+</table>
+<p>So, we are ready to deploy Jenkins server on our VPC.</p>
+<table>
+  <tbody>
+    <tr style="background-color: #cccccc;">
+      <td>
+<code>
+<b>$ terraform plan -out=demo.out<br>
+$ terraform apply "demo.out"</b>
+<br>
+</code>
+      </td>
+    </tr>
+  </tbody>
+</table>
+<div class="separator" style="clear: both;"><a href="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEhx9Mp-4cqBNEp5P05zPq-dkaZXzm-4HySQ5dgERiaaRbMjHtcZnP4TviNvCzsSOFcSKpxuS0s6EIoGUWuubxqNGFxzafhGPBRNouPCJr1Hw4P6hmUzfGIzpnxEqZnh7z3IHFQmz5WH5cLvoFF3fcQrcMzntBBLd-_xGNd-GcIB2eX8ieeTusM65u2F-Q/s604/2ktjphz956.png" style="display: block; padding: 1em 0; text-align: center; "><img alt="" border="0" width="320" data-original-height="332" data-original-width="604" src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEhx9Mp-4cqBNEp5P05zPq-dkaZXzm-4HySQ5dgERiaaRbMjHtcZnP4TviNvCzsSOFcSKpxuS0s6EIoGUWuubxqNGFxzafhGPBRNouPCJr1Hw4P6hmUzfGIzpnxEqZnh7z3IHFQmz5WH5cLvoFF3fcQrcMzntBBLd-_xGNd-GcIB2eX8ieeTusM65u2F-Q/s320/2ktjphz956.png"/></a></div>
+<p>Next one is Ansible</p>
