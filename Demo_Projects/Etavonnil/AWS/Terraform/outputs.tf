@@ -20,6 +20,7 @@ output "jenkins_instance_ip" {
 
 output "jenkins_instance_fqdn" {
     value = module.ec2_instance.public_dns
+<<<<<<< HEAD
 }
 
 # https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/availability_zones
@@ -29,4 +30,6 @@ data "aws_availability_zones" "working" {
 
 output "data_aws_availability_zones" {
   value = data.aws_availability_zones.working.names
+=======
+>>>>>>> d6eee2b4c29980c644de6e0d03337f8f1d085836
 }
