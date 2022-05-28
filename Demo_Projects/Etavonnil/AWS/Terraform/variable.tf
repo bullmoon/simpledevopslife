@@ -1,7 +1,7 @@
 variable "AWS_REGION" {
     description = "Region of AWS VPC"
     type = string
-    default = "us-west-2"
+    default = "ca-central-1"
 }
 
 variable "instance_type" {

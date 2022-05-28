@@ -26,35 +26,46 @@ Create cicd (any cicd soft) that :<br>
     </tbody>
 </table>
 <span><!--more--></span>
-<p>Well, let's say you were intervied. Everything was great. But suddenly, you get a message - "Could you solve one more task? And it must be in the public cloud".</p>
+<p>Well, let's say you were interviewed. Everything was great. But suddenly, you get a message - "Could you solve one more task? And it must be in the public cloud".</p>
 <p>Question number one is how to deploy the infrastructure - eksctl, terraform, ansible, etc. I'm sure, during the looking for a job, we are going to show not just the code, but demonstrate how it works online.</p>
-<p>Second question is which cloud to use AWS, GCP, Azure, Blue Ocean. My practice shows, the most interest has AWS and GCP, accordingly we will deploy our infrastructure on these two.</p>
-<p>For beginning, I'm going to use EC2 for Jenkins and AWS EKS for deployment.</p>
+<p>The second question is which cloud to use AWS, GCP, Azure, and Blue Ocean. My practice shows, that the most interest has AWS and GCP, accordingly, we will deploy our infrastructure on these two.</p>
+<p>For the beginning, I'm going to use EC2 for Jenkins and AWS EKS for deployment.</p>
 <div class="separator" style="clear: both;"><a href="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEgyyPXWC_Bxebaasnfwf4Bza2ifJ5PZ_aRN7zzU-lpPCQZZ9G-rp2y5uf_Qre0xXwRBAa9O7694nEdAJCuOoimXIDufUTQJ0NMeMcCA9GpKcy0F15-eiF5IPSL8kh4BWgnKJZFLBckeZsjKlIYP9P0YwQZDTs8B7BL7cdgVnh1_vppQ62pl19NI1JKmWQ/s320/u54xtu5xzt.png" style="display: block; padding: 1em 0; text-align: center; "><img alt="" border="0" width="320" data-original-height="139" data-original-width="320" src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEgyyPXWC_Bxebaasnfwf4Bza2ifJ5PZ_aRN7zzU-lpPCQZZ9G-rp2y5uf_Qre0xXwRBAa9O7694nEdAJCuOoimXIDufUTQJ0NMeMcCA9GpKcy0F15-eiF5IPSL8kh4BWgnKJZFLBckeZsjKlIYP9P0YwQZDTs8B7BL7cdgVnh1_vppQ62pl19NI1JKmWQ/s320/u54xtu5xzt.png"/></a></div>
 <p>But first of all, I should create a new repository on GitHub</p>
 <div class="separator" style="clear: both;"><a href="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEimovbf5jiuOqvYo8hWDJtCRH-Uf0eEkzHXgK7QvOGSY7h1QfPd_92keIjOHeprrrt7sAp_NEVSvW8P7cxsg1nYz6C4f-8ji9wN2NzumOKgUijKugcTBD3eA8wzU8TMU6H83HSqNgdh6DU6EWfLy9bAu60WJ456c06nwpK2oUDtJNVq4G_tLkLeBD_1Jg/s323/ys86t96xcq.png" style="display: block; padding: 1em 0; text-align: center; "><img alt="" border="0" height="200" data-original-height="323" data-original-width="320" src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEimovbf5jiuOqvYo8hWDJtCRH-Uf0eEkzHXgK7QvOGSY7h1QfPd_92keIjOHeprrrt7sAp_NEVSvW8P7cxsg1nYz6C4f-8ji9wN2NzumOKgUijKugcTBD3eA8wzU8TMU6H83HSqNgdh6DU6EWfLy9bAu60WJ456c06nwpK2oUDtJNVq4G_tLkLeBD_1Jg/s200/ys86t96xcq.png"/></a></div>
 <p>So, let's get started.</p>
 <dl>
   <dt>We have to:</dt>
-  <dd>create key pair for access to the instance (and save jenkins_demo.pem file in our .ssh folder)</dd>
-  <dd>create vpc, security group, and Jenkins instance</dd>
-  <dd>Config Ansible for Jenkins</dd>
+  <dd>- Create key pair for access to the instance (and save the jenkins_demo.pem file in our .ssh folder)</dd>
+  <dd>- Create vpc, security group, and Jenkins instance config</dd>
+  <dd></dd>
   <dd></dd>
   <dd></dd>
   <dd></dd>
   <dd></dd>
   </dl>
   <div class="separator" style="clear: both;"><a href="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEhrJEYRx8mOizY8XOSliUL1A790Q38LT-WVb26W4Y1j-LKplIyprV3sa1d4ZJyvCcP5Ewxqn5vFH5pcl1FkRAoPYN-b-lf_9mWepvyWRhMmk_YczMcRQukFik04jLp6o2B6o50XWYwFt8tlcRPAN45bc3YSiqYOTNtxTP8vQ4Azw7uvYDrw6iVG_4ZGkA/s878/aappf5x94n.png" style="display: block; padding: 1em 0px; text-align: center;"><img alt="" border="0" data-original-height="753" data-original-width="878" height="274" src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEhrJEYRx8mOizY8XOSliUL1A790Q38LT-WVb26W4Y1j-LKplIyprV3sa1d4ZJyvCcP5Ewxqn5vFH5pcl1FkRAoPYN-b-lf_9mWepvyWRhMmk_YczMcRQukFik04jLp6o2B6o50XWYwFt8tlcRPAN45bc3YSiqYOTNtxTP8vQ4Azw7uvYDrw6iVG_4ZGkA/w320-h274/aappf5x94n.png" width="320" /></a></div>
+  <p>It is important to note that key pair we have to create for each region.</p>
   <table>
     <tbody>
       <tr style="background-color: #cccccc;">
         <td>
 <code>
   <b>$ cat variable.tf</b><br>
-variable "AWS_REGION" {<br>
-  &nbsp;&nbsp;description = "Region of AWS VPC"<br>
+  variable "AWS_REGION" {<br>
+    &nbsp;&nbsp;description = "Region of AWS VPC"<br>
+    &nbsp;&nbsp;type = string<br>
+    &nbsp;&nbsp;default = "ca-central-1"<br>
+}<br>
+<br>
+variable "instance_type" {<br>
   &nbsp;&nbsp;type = string<br>
-  &nbsp;&nbsp;default = "us-west-2"<br>
+  &nbsp;&nbsp;default = "t2.micro"<br>
+}<br>
+<br>
+variable "key_name" {<br>
+  &nbsp;&nbsp;description = "ssh key pair for current region"<br>
+  &nbsp;&nbsp;type = string<br>
 }<br>
 </code>
         </td>
@@ -69,6 +80,7 @@ variable "AWS_REGION" {<br>
 <code>
   <b>$ cat provider.tf</b><br>
 provider "aws" {<br>
+  &nbsp;&nbsp;profile = "terraform"<br>
   &nbsp;&nbsp;region = "${var.AWS_REGION}"<br>
 }<br>
 </code>
@@ -76,7 +88,7 @@ provider "aws" {<br>
       </tr>
     </tbody>
 </table>
-  <p></p>
+  <p><b>Subnets specified must be in at least two different AZs</b></p>
   <table>
     <tbody>
       <tr style="background-color: #cccccc;">
@@ -91,11 +103,11 @@ module "vpc" {<br>
 &nbsp;&nbsp;name = "demo-vpc"<br>
 &nbsp;&nbsp;cidr = "10.0.0.0/16"<br>
 <br>
-&nbsp;&nbsp;azs             = ["us-west-2a"]<br>
-&nbsp;&nbsp;private_subnets = ["10.0.1.0/24", "10.0.2.0/24"]<br>
-&nbsp;&nbsp;public_subnets  = ["10.0.101.0/24"]<br>
+&nbsp;&nbsp;azs             = data.aws_availability_zones.working.names<br>
+&nbsp;&nbsp;private_subnets = ["10.0.10.0/24", "10.0.20.0/24"]<br>
+&nbsp;&nbsp;public_subnets  = ["10.0.30.0/24"]<br>
 <br>
-&nbsp;&nbsp;enable_nat_gateway = true<br>
+&nbsp;&nbsp;enable_nat_gateway = false<br>
 &nbsp;&nbsp;enable_vpn_gateway = false<br>
 &nbsp;&nbsp;enable_dns_hostnames = true<br>
 <br>
@@ -115,122 +127,256 @@ module "vpc" {<br>
       <tr style="background-color: #cccccc;">
         <td>
 <code>
-<b>$ cat security_group.tf</b><br>
+<b>$ cat security_group.tf<br></b>
 # https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/security_group<br>
 #<br>
-resource "aws_security_group" "allow_custom_ports" {<br>
-&nbsp;&nbsp;name        = "allow_custom_ports"<br>
-&nbsp;&nbsp;description = "Allow ports 22, 8080 and ICMP inbound traffic"<br>
-&nbsp;&nbsp;vpc_id      = module.vpc.vpc_id<br>
+resource "aws_security_group" "jenkins" {<br>
+  &nbsp;&nbsp;name        = "Dynamic Jenkins SG"<br>
+  &nbsp;&nbsp;description = "Allow SSH, HTTP, HTTPS, 8080 inbound traffic"<br>
 <br>
-&nbsp;&nbsp;ingress {<br>
-&nbsp;&nbsp;&nbsp;&nbsp;description      = "8080 from VPC"<br>
-&nbsp;&nbsp;&nbsp;&nbsp;from_port        = 8080<br>
-&nbsp;&nbsp;&nbsp;&nbsp;to_port          = 8080<br>
-&nbsp;&nbsp;&nbsp;&nbsp;protocol         = "tcp"<br>
-&nbsp;&nbsp;&nbsp;&nbsp;cidr_blocks      = ["0.0.0.0/0"]<br>
-&nbsp;&nbsp;}<br>
+  &nbsp;&nbsp;dynamic "ingress" {<br>
+    &nbsp;&nbsp;&nbsp;&nbsp;for_each = ["22", "80", "443", "8080"]<br>
+    &nbsp;&nbsp;&nbsp;&nbsp;content {<br>
+      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;from_port        = ingress.value<br>
+      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;to_port          = ingress.value<br>
+      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;protocol         = "tcp"<br>
+      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;cidr_blocks      = ["0.0.0.0/0"]<br>
+    &nbsp;&nbsp;&nbsp;&nbsp;}<br>
+  &nbsp;&nbsp;}<br>
 <br>
-&nbsp;&nbsp;ingress {<br>
-&nbsp;&nbsp;&nbsp;&nbsp;description      = "SSH from VPC"<br>
-&nbsp;&nbsp;&nbsp;&nbsp;from_port        = 22<br>
-&nbsp;&nbsp;&nbsp;&nbsp;to_port          = 22<br>
-&nbsp;&nbsp;&nbsp;&nbsp;protocol         = "tcp"<br>
-&nbsp;&nbsp;&nbsp;&nbsp;cidr_blocks      = ["0.0.0.0/0"]<br>
-&nbsp;&nbsp;}<br>
+  &nbsp;&nbsp;egress {<br>
+    &nbsp;&nbsp;&nbsp;&nbsp;from_port        = 0<br>
+    &nbsp;&nbsp;&nbsp;&nbsp;to_port          = 0<br>
+    &nbsp;&nbsp;&nbsp;&nbsp;protocol         = "-1"<br>
+    &nbsp;&nbsp;&nbsp;&nbsp;cidr_blocks      = ["0.0.0.0/0"]<br>
+  &nbsp;&nbsp;}<br>
 <br>
-&nbsp;&nbsp;ingress {<br>
-&nbsp;&nbsp;&nbsp;&nbsp;description      = "ICMP from VPC"<br>
-&nbsp;&nbsp;&nbsp;&nbsp;from_port        = 8<br>
-&nbsp;&nbsp;&nbsp;&nbsp;to_port          = 0<br>
-&nbsp;&nbsp;&nbsp;&nbsp;protocol         = "icmp"<br>
-&nbsp;&nbsp;&nbsp;&nbsp;cidr_blocks      = ["0.0.0.0/0"]<br>
-&nbsp;&nbsp;}<br>
-<br>
-&nbsp;&nbsp;egress {<br>
-&nbsp;&nbsp;&nbsp;&nbsp;from_port        = 0<br>
-&nbsp;&nbsp;&nbsp;&nbsp;to_port          = 0<br>
-&nbsp;&nbsp;&nbsp;&nbsp;protocol         = "-1"<br>
-&nbsp;&nbsp;&nbsp;&nbsp;cidr_blocks      = ["0.0.0.0/0"]<br>
-&nbsp;&nbsp;}<br>
-<br>
-&nbsp;&nbsp;tags = {<br>
-&nbsp;&nbsp;&nbsp;&nbsp;Name = "allow_custom_ports"<br>
-&nbsp;&nbsp;}<br>
+  &nbsp;&nbsp;tags = {<br>
+    &nbsp;&nbsp;&nbsp;&nbsp;Name = "jenkins_custom_ports"<br>
+  &nbsp;&nbsp;}<br>
 }<br>
 </code>
         </td>
       </tr>
     </tbody>
 </table>
-<p>finally, we create an instance file</p>
+<p>finally, we can create an instance config file. It will contain an Ansible playbook.</p>
 <table>
-<tbody>
-  <tr style="background-color: #cccccc;">
-    <td>
+  <tbody>
+    <tr style="background-color: #cccccc;">
+      <td>
 <code>
-<b>$ cat ec2_jenkins.tf</b><br>
+<b>$ cat ec2_jenkins.tf<br></b>
+locals {<br>
+&nbsp;&nbsp;instance_name     = "single-jenkins-instance"<br>
+&nbsp;&nbsp;private_key_path  = "~/.ssh/jenkins_demo_ca_central_1.pem"<br>
+&nbsp;&nbsp;ssh_user          = "ubuntu"<br>
+&nbsp;&nbsp;key_name          = "jenkins_demo_ca_central_1"<br>
+}<br>
+<br>
 # https://registry.terraform.io/modules/terraform-aws-modules/ec2-instance/aws/latest<br>
 #<br>
-module "ec2_instance" {<br>
-&nbsp;&nbsp;source  = "terraform-aws-modules/ec2-instance/aws"<br>
-&nbsp;&nbsp;version = "~> 3.0"<br>
-&nbsp;&nbsp;create = true<br>
-&nbsp;&nbsp;name = "single-jenkins-instance"<br>
+data "aws_ami" "latest_aws_ubuntu" {<br>
+&nbsp;&nbsp;owners           = ["679593333241"]<br>
+&nbsp;&nbsp;most_recent      = true<br>
+&nbsp;&nbsp;filter {<br>
+&nbsp;&nbsp;&nbsp;name   = "name"<br>
+&nbsp;&nbsp;&nbsp;values = ["ubuntu/images/hvm-ssd/ubuntu-jammy-22.04-amd64-server-*"]<br>
+&nbsp;&nbsp;}<br>
+}<br>
 <br>
-&nbsp;&nbsp;ami                    = "ami-0ca285d4c2cda3300"<br>
-&nbsp;&nbsp;instance_type          = "t2.micro"<br>
-&nbsp;&nbsp;key_name               = "jenkins_demo"<br>
-&nbsp;&nbsp;monitoring             = false<br>
-&nbsp;&nbsp;vpc_security_group_ids = [aws_security_group.allow_custom_ports.id]<br>
-&nbsp;&nbsp;subnet_id              = module.vpc.public_subnets[0]<br>
+resource "aws_instance" "jenkins" {<br>
+&nbsp;&nbsp;ami                         = data.aws_ami.latest_aws_ubuntu.id<br>
+&nbsp;&nbsp;subnet_id                   = "subnet-8ad313d5"<br>
+&nbsp;&nbsp;instance_type               = "t3.micro" # t2.micro is not available in that AZ<br>
+&nbsp;&nbsp;associate_public_ip_address = true<br>
+&nbsp;&nbsp;key_name                    = local.key_name<br>
+&nbsp;&nbsp;monitoring                  = false<br>
+&nbsp;&nbsp;security_groups             = [aws_security_group.jenkins.id]<br>
 <br>
 &nbsp;&nbsp;tags = {<br>
-&nbsp;&nbsp;&nbsp;&nbsp;Terraform   = "true"<br>
-&nbsp;&nbsp;&nbsp;&nbsp;Environment = "demo"<br>
+  &nbsp;&nbsp;&nbsp;Name = "Jenkins"<br>
+&nbsp;&nbsp;}<br>
+<br>
+&nbsp;&nbsp;provisioner "remote-exec" {<br>
+  &nbsp;&nbsp;&nbsp;&nbsp;inline = ["echo 'Wait until SSH is ready'"]<br>
+  <br>
+  &nbsp;&nbsp;&nbsp;&nbsp;connection {<br>
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;type        = "ssh"<br>
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;user        = local.ssh_user<br>
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;private_key = file(local.private_key_path)<br>
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;host        = aws_instance.jenkins.public_ip<br>
+  &nbsp;&nbsp;&nbsp;&nbsp;}<br>
+&nbsp;&nbsp;}<br>
+<br>
+&nbsp;&nbsp;provisioner "local-exec" {<br>
+  &nbsp;&nbsp;&nbsp;&nbsp;command = "ansible-playbook  -i ${aws_instance.jenkins.public_dns}, --private-key ${local.private_key_path} ../Ansible/apps.yaml"<br>
 &nbsp;&nbsp;}<br>
 }<br>
 </code>
-    </td>
-  </tr>
-</tbody>
+      </td>
+    </tr>
+  </tbody>
 </table>
 <p>One more thing</p>
 <table>
-<tbody>
-  <tr style="background-color: #cccccc;">
-    <td>
+  <tbody>
+    <tr style="background-color: #cccccc;">
+      <td>
 <code>
 <b>$ cat outputs.tf<br></b>
 output "vpc_id" {<br>
-&nbsp;&nbsp;value = module.vpc.vpc_id<br>
+  &nbsp;&nbsp;value = module.vpc.vpc_id<br>
 }<br>
 <br>
 output "private_subnets" {<br>
-&nbsp;&nbsp;value = [module.vpc.private_subnets]<br>
+  &nbsp;&nbsp;value = [module.vpc.private_subnets]<br>
 }<br>
 <br>
 output "public_subnets" {<br>
-&nbsp;&nbsp;value = [module.vpc.public_subnets]<br>
+  &nbsp;&nbsp;value = [module.vpc.public_subnets]<br>
 }<br>
 <br>
 output "vpc_security_group_ids" {<br>
-&nbsp;&nbsp;value = [aws_security_group.allow_custom_ports.id]<br>
+  &nbsp;&nbsp;value = [aws_security_group.allow_custom_ports.id]<br>
 }<br>
 <br>
 output "jenkins_instance_ip" {<br>
-&nbsp;&nbsp;value = module.ec2_instance.public_ip<br>
+  &nbsp;&nbsp;value = aws_instance.jenkins.public_ip<br>
 }<br>
-
+<br>
 output "jenkins_instance_fqdn" {<br>
-&nbsp;&nbsp;value = module.ec2_instance.public_dns<br>
+  &nbsp;&nbsp;value = aws_instance.jenkins.public_dns<br>
+}<br>
+<br>
+# https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/availability_zones<br>
+data "aws_availability_zones" "working" {<br>
+&nbsp;&nbsp;state = "available"<br>
+}<br>
+<br>
+output "data_aws_availability_zones" {<br>
+&nbsp;&nbsp;value = data.aws_availability_zones.working.names<br>
 }<br>
 </code>
-    </td>
-  </tr>
-</tbody>
+      </td>
+    </tr>
+  </tbody>
 </table>
-<p>So, we are ready to deploy Jenkins server on our VPC.</p>
+<p>Great. Let's make the ansible play. We have to install Nginx, Java and Jenkins into the instance.</p>
+<div class="separator" style="clear: both;"><a href="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEgVY7Cyyo-E8avNfpLgW8pSHsMyFHddQ7KRI7bf7xh4zYLmMfuUYYJfaPg7-8RG4dB30qNHZh1q9DtXjhSV4jWEiFOi2_jg_pfpa1bFQEIzAiNyjFFkE4-nRdfUfHgaeXki4RzeM26BOOf23fMv8lGwX_rOg66pMBTL9vogsnNbt7eA-n_zAK0lIt7ksA/s419/gnwy4pd3iw.png" style="display: block; padding: 1em 0; text-align: center; "><img alt="" border="0" height="320" data-original-height="419" data-original-width="245" src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEgVY7Cyyo-E8avNfpLgW8pSHsMyFHddQ7KRI7bf7xh4zYLmMfuUYYJfaPg7-8RG4dB30qNHZh1q9DtXjhSV4jWEiFOi2_jg_pfpa1bFQEIzAiNyjFFkE4-nRdfUfHgaeXki4RzeM26BOOf23fMv8lGwX_rOg66pMBTL9vogsnNbt7eA-n_zAK0lIt7ksA/s320/gnwy4pd3iw.png"/></a></div>
+<p>Ansible config</p>
+<table>
+  <tbody>
+    <tr style="background-color: #cccccc;">
+      <td>
+<code>
+<b>$ cat ansible.cfg<br></b>
+[defaults]<br>
+host_key_checking = False<br>
+</code>
+      </td>
+    </tr>
+  </tbody>
+</table>
+<p>main playbook</p>
+<table>
+  <tbody>
+    <tr style="background-color: #cccccc;">
+      <td>
+<code>
+<b>$ cat apps.yaml<br></b>
+---<br>
+- name: Install Applications<br>
+&nbsp;&nbsp;hosts: all<br>
+&nbsp;&nbsp;remote_user: ubuntu<br>
+&nbsp;&nbsp;become: yes<br>
+<br>
+roles:<br>
+- nginx<br>
+- java<br>
+- jenkins<br>
+</code>
+      </td>
+    </tr>
+  </tbody>
+</table>
+<p>Awesome, roles. Nginx role:</p>
+<table>
+  <tbody>
+    <tr style="background-color: #cccccc;">
+      <td>
+<code>
+<b>$ cat main.yaml<br></b>
+---<br>
+- name: Ensure Nginx is at the latest version<br>
+&nbsp;&nbsp;apt:<br>
+  &nbsp;&nbsp;&nbsp;&nbsp;name: nginx<br>
+  &nbsp;&nbsp;&nbsp;&nbsp;state: latest<br>
+- name: Make sure Nginx is running<br>
+&nbsp;&nbsp;service:<br>
+  &nbsp;&nbsp;&nbsp;&nbsp;name: nginx<br>
+  &nbsp;&nbsp;&nbsp;&nbsp;state: started<br>
+</code>
+      </td>
+    </tr>
+  </tbody>
+</table>
+<p>Role for Java:</p>
+<table>
+  <tbody>
+    <tr style="background-color: #cccccc;">
+      <td>
+<code>
+<b>$ cat main.yaml<br></b>
+---<br>
+- name: Install java<br>
+&nbsp;&nbsp;apt:<br>
+  &nbsp;&nbsp;&nbsp;&nbsp;name: openjdk-11-jre<br>
+  &nbsp;&nbsp;&nbsp;&nbsp;state: present<br>
+</code>
+      </td>
+    </tr>
+  </tbody>
+</table>
+<p>And last one is Jenkins installation role:</p>
+<table>
+  <tbody>
+    <tr style="background-color: #cccccc;">
+      <td>
+<code>
+<b>$ cat main.yaml<br></b>
+---<br>
+- name: Install dependencies<br>
+&nbsp;&nbsp;apt:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;name: net-tools<br>
+&nbsp;&nbsp;&nbsp;&nbsp;state: present<br>
+<br>
+- name: ensure the jenkins apt repository key is installed<br>
+&nbsp;&nbsp;apt_key:<br>
+  &nbsp;&nbsp;&nbsp;&nbsp;url: 'https://pkg.jenkins.io/debian-stable/jenkins.io.key'<br>
+  &nbsp;&nbsp;&nbsp;&nbsp;state: present<br>
+<br>
+- name: ensure the repository is configured<br>
+&nbsp;&nbsp;apt_repository:<br>
+  &nbsp;&nbsp;&nbsp;&nbsp;repo: 'deb https://pkg.jenkins.io/debian-stable binary/'<br>
+  &nbsp;&nbsp;&nbsp;&nbsp;state: present<br>
+<br>
+- name: ensure jenkins is installed<br>
+&nbsp;&nbsp;apt:<br>
+  &nbsp;&nbsp;&nbsp;&nbsp;name: jenkins<br>
+  &nbsp;&nbsp;&nbsp;&nbsp;update_cache: yes<br>
+<br>
+- name: ensure jenkins is running<br>
+&nbsp;&nbsp;service:<br>
+  &nbsp;&nbsp;&nbsp;&nbsp;name: jenkins<br>
+  &nbsp;&nbsp;&nbsp;&nbsp;state: started<br>
+</code>
+      </td>
+    </tr>
+  </tbody>
+</table>
+<p>It's all good, move on.</p>
+<p>So, we are ready to deploy the Jenkins server on our VPC.</p>
 <table>
 <tbody>
   <tr style="background-color: #cccccc;">
@@ -246,4 +392,105 @@ $ terraform apply "demo.out"</b>
 </tbody>
 </table>
 <div class="separator" style="clear: both;"><a href="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEhx9Mp-4cqBNEp5P05zPq-dkaZXzm-4HySQ5dgERiaaRbMjHtcZnP4TviNvCzsSOFcSKpxuS0s6EIoGUWuubxqNGFxzafhGPBRNouPCJr1Hw4P6hmUzfGIzpnxEqZnh7z3IHFQmz5WH5cLvoFF3fcQrcMzntBBLd-_xGNd-GcIB2eX8ieeTusM65u2F-Q/s604/2ktjphz956.png" style="display: block; padding: 1em 0; text-align: center; "><img alt="" border="0" width="320" data-original-height="332" data-original-width="604" src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEhx9Mp-4cqBNEp5P05zPq-dkaZXzm-4HySQ5dgERiaaRbMjHtcZnP4TviNvCzsSOFcSKpxuS0s6EIoGUWuubxqNGFxzafhGPBRNouPCJr1Hw4P6hmUzfGIzpnxEqZnh7z3IHFQmz5WH5cLvoFF3fcQrcMzntBBLd-_xGNd-GcIB2eX8ieeTusM65u2F-Q/s320/2ktjphz956.png"/></a></div>
-<p>As we use a free tier, we should deploy all tools (Jenkins, Docker engine, Kubectl) into a single instance.</p>
+<p>Let's take a look at the result</p>
+<div class="separator" style="clear: both;"><a href="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEgwUH1jBKgT6FHvGJziqHdHL-cWa9FcJ-iiDhPz3qnfu0DDElRZ4qkcT9JGb4kwq7NtnkwZWbbhAACnZnFIKtHDG04Lf8vzz-yCN6-l6uSvG9rB9qnexfhyN0A0jLaLciPiWmBOYISRZupBMq3iV-NCRU70EUKrs3myHN2h6Y8OHH0kgQ3GARursjmh8w/s894/wnvao5f6.png" style="display: block; padding: 1em 0; text-align: center; "><img alt="" border="0" width="320" data-original-height="352" data-original-width="894" src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEgwUH1jBKgT6FHvGJziqHdHL-cWa9FcJ-iiDhPz3qnfu0DDElRZ4qkcT9JGb4kwq7NtnkwZWbbhAACnZnFIKtHDG04Lf8vzz-yCN6-l6uSvG9rB9qnexfhyN0A0jLaLciPiWmBOYISRZupBMq3iV-NCRU70EUKrs3myHN2h6Y8OHH0kgQ3GARursjmh8w/s320/wnvao5f6.png"/></a></div>
+<p>Amazing! As we use a free tier, we should deploy all the necessary tools into a single instance. So, let's extend ansible play for installing Docker engine and Kubectl.</p>
+<p>Edit main ansible playbook and add roles</p>
+<table>
+  <tbody>
+    <tr style="background-color: #cccccc;">
+      <td>
+<code>
+<b>$ cat apps.yaml<br></b>
+---<br>
+- name: Install Applications<br>
+&nbsp;&nbsp;hosts: all<br>
+&nbsp;&nbsp;remote_user: ubuntu<br>
+&nbsp;&nbsp;become: yes<br>
+<br>
+roles:<br>
+- nginx<br>
+- java<br>
+- jenkins<br>
+- docker<br>
+- kubernetes<br>
+</code>
+      </td>
+    </tr>
+  </tbody>
+</table>
+<p>Docker installation role</p>
+<table>
+  <tbody>
+    <tr style="background-color: #cccccc;">
+      <td>
+<code>
+<b>$ cat main.yaml<br></b>
+---<br>
+- name: Install required system packages<br>
+&nbsp;&nbsp;ansible.builtin.apt:<br>
+  &nbsp;&nbsp;&nbsp;&nbsp;name:<br>
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;- apt-transport-https<br>
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;- ca-certificates<br>
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;- lsb-release<br>
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;- gnupg<br>
+  &nbsp;&nbsp;&nbsp;&nbsp;state: latest<br>
+  &nbsp;&nbsp;&nbsp;&nbsp;update_cache: true<br>
+<br>
+- name: Add signing key<br>
+&nbsp;&nbsp;ansible.builtin.apt_key:<br>
+  &nbsp;&nbsp;&nbsp;&nbsp;url: "https://download.docker.com/linux/{{ ansible_distribution | lower }}/gpg"<br>
+  &nbsp;&nbsp;&nbsp;&nbsp;state: present<br>
+<br>
+- name: Add repository into sources list<br>
+&nbsp;&nbsp;ansible.builtin.apt_repository:<br>
+  &nbsp;&nbsp;&nbsp;&nbsp;repo: "deb [arch={{ ansible_architecture }}] https://download.docker.com/linux/{{ ansible_distribution | lower }} {{ ansible_distribution_release }} stable"<br>
+  &nbsp;&nbsp;&nbsp;&nbsp;state: present<br>
+  &nbsp;&nbsp;&nbsp;&nbsp;filename: docker<br>
+<br>
+- name: Install Docker<br>
+&nbsp;&nbsp;ansible.builtin.apt:<br>
+  &nbsp;&nbsp;&nbsp;&nbsp;name:<br>
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;- docker<br>
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;- docker.io<br>
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;- docker-compose<br>
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;- docker-registry<br>
+  &nbsp;&nbsp;&nbsp;&nbsp;state: latest<br>
+  &nbsp;&nbsp;&nbsp;&nbsp;update_cache: true<br>
+</code>
+      </td>
+    </tr>
+  </tbody>
+</table>
+<p>Kubernetes installation role</p>
+<table>
+  <tbody>
+    <tr style="background-color: #cccccc;">
+      <td>
+<code>
+<b>$ cat main.yaml<br></b>
+---<br>
+- name: Add Google official GPG key<br>
+&nbsp;&nbsp;apt_key:<br>
+  &nbsp;&nbsp;&nbsp;&nbsp;url: https://packages.cloud.google.com/apt/doc/apt-key.gpg<br>
+  &nbsp;&nbsp;&nbsp;&nbsp;state: present<br>
+<br>
+- name: Add Kubernetes Repository<br>
+&nbsp;&nbsp;apt_repository:<br>
+  &nbsp;&nbsp;&nbsp;&nbsp;repo: deb http://apt.kubernetes.io/ kubernetes-xenial main<br>
+  &nbsp;&nbsp;&nbsp;&nbsp;state: present<br>
+  &nbsp;&nbsp;&nbsp;&nbsp;filename: kubernetes<br>
+  &nbsp;&nbsp;&nbsp;&nbsp;mode: 0600<br>
+<br>
+- name: Installing Kubernetes tool.<br>
+&nbsp;&nbsp;apt:<br>
+  &nbsp;&nbsp;&nbsp;&nbsp;name:<br>
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;- kubectl<br>
+  &nbsp;&nbsp;&nbsp;&nbsp;state: present<br>
+</code>
+      </td>
+    </tr>
+  </tbody>
+</table>
+<p>Well, we have deployed a super instance. BTW, we haven't finished Jenkins server installation. I don't want to describe it here. If you need it - follow this <a href="https://www.jenkins.io/doc/book/installing/linux/" target="_blank">link</a>.</p>
+<p><a href="https://simpledevopslife.blogspot.com/2022/05/post-interview-devops-home-test-part-2.html">Next part</a></p>

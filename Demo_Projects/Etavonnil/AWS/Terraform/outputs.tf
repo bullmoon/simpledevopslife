@@ -15,11 +15,11 @@ output "vpc_security_group_ids" {
 }
 
 output "jenkins_instance_ip" {
-    value = module.ec2_instance.public_ip
+    value = aws_instance.jenkins.public_ip
 }
 
 output "jenkins_instance_fqdn" {
-    value = module.ec2_instance.public_dns
+    value = aws_instance.jenkins.public_dns
 }
 
 # https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/availability_zones

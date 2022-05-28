@@ -1,0 +1,82 @@
+<head>
+    <b:skin>
+        <style>
+        P {
+         text-indent: 1.5em; /* Отступ первой строки */
+         text-align: justify; /* Выравнивание по ширине */
+        }
+        </style>
+    </b:skin>
+</head>
+<div class="separator" style="clear: both;"><a href="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEjLK3CsOiU2gSYZVmLuw0JJ621icHLp9eFj4IpQ5qHh5hV-af_DXWPqmf2_MHVSjNyaU8fufz09EVOitsNQsUFVR3VV_h8L544Ac1n6wnx5uxOe_PUfLmOW2Oh-EFLV1xn58cHT-vwTKdwAlqWetidW-FiaJ5dqQie0modVUoPwlUcgj-mwkb4FFyoXnA/s217/47w5k8z4g3.png" style="display: block; padding: 1em 0; text-align: center; "><img alt="" border="0" width="200" data-original-height="177" data-original-width="217" src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEjLK3CsOiU2gSYZVmLuw0JJ621icHLp9eFj4IpQ5qHh5hV-af_DXWPqmf2_MHVSjNyaU8fufz09EVOitsNQsUFVR3VV_h8L544Ac1n6wnx5uxOe_PUfLmOW2Oh-EFLV1xn58cHT-vwTKdwAlqWetidW-FiaJ5dqQie0modVUoPwlUcgj-mwkb4FFyoXnA/s200/47w5k8z4g3.png"/></a></div>
+<p>Meanwhile, don't forget to finish Jenkins server installation.</p>
+<div class="separator" style="clear: both;"><a href="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEilWpYV88vy-v9sttUVUmQYtqcE-kE67BilKkrEKlRjUcXQMXckgVyzjxM1ebq9aBKPrsJmNbNCUfbOjgTGtY_rJ5QELENmZwu0FV5srq-dvktp4RflAS-xtDwk3vXiFPolmPfspUSXZPmBc8h6923e9NmNRoitmqjIQAJ__Of3M5UALqhWgAHIPbE9qQ/s990/69x9h5cy.png" style="display: block; padding: 1em 0; text-align: center; "><img alt="" border="0" width="320" data-original-height="577" data-original-width="990" src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEilWpYV88vy-v9sttUVUmQYtqcE-kE67BilKkrEKlRjUcXQMXckgVyzjxM1ebq9aBKPrsJmNbNCUfbOjgTGtY_rJ5QELENmZwu0FV5srq-dvktp4RflAS-xtDwk3vXiFPolmPfspUSXZPmBc8h6923e9NmNRoitmqjIQAJ__Of3M5UALqhWgAHIPbE9qQ/s320/69x9h5cy.png"/></a></div>
+<p>It's time to deploy Kubernetes cluster.</p>
+<span><!--more--></span>
+  <table>
+  <tbody>
+    <tr style="background-color: #cccccc;">
+      <td>
+<code>
+<b>$ cat eks-cluster.tf<br></b>
+locals {<br>
+&nbsp;&nbsp;  cluster_name = "demo-eks"<br>
+}<br>
+module "eks" {<br>
+&nbsp;&nbsp;source          = "terraform-aws-modules/eks/aws"<br>
+&nbsp;&nbsp;version         = "17.24.0"<br>
+&nbsp;&nbsp;cluster_name    = local.cluster_name<br>
+&nbsp;&nbsp;cluster_version = "1.20"<br>
+&nbsp;&nbsp;subnets         = module.vpc.private_subnets<br>
+<br>
+&nbsp;&nbsp;vpc_id = module.vpc.vpc_id<br>
+<br>
+&nbsp;&nbsp;workers_group_defaults = {<br>
+  &nbsp;&nbsp;&nbsp;&nbsp;root_volume_type = "gp2"<br>
+&nbsp;&nbsp;}<br>
+<br>
+&nbsp;&nbsp;worker_groups = [<br>
+  &nbsp;&nbsp;&nbsp;&nbsp;{<br>
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;name                          = "demo-grp-1"<br>
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;instance_type                 = var.instance_type<br>
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;additional_userdata           = ""<br>
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;asg_desired_capacity          = 1<br>
+  &nbsp;&nbsp;&nbsp;&nbsp;},<br>
+  &nbsp;&nbsp;&nbsp;&nbsp;{<br>
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;name                          = "demo-grp-2"<br>
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;instance_type                 = var.instance_type<br>
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;additional_userdata           = ""<br>
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;asg_desired_capacity          = 1<br>
+  &nbsp;&nbsp;&nbsp;&nbsp;},<br>
+&nbsp;&nbsp;]<br>
+}<br>
+<br>
+data "aws_eks_cluster" "cluster" {<br>
+&nbsp;&nbsp;name = module.eks.cluster_id<br>
+}<br>
+<br>
+data "aws_eks_cluster_auth" "cluster" {<br>
+&nbsp;&nbsp;name = module.eks.cluster_id<br>
+}<br>
+</code>
+      </td>
+    </tr>
+  </tbody>
+</table>
+<p>Ok, now we have to install aws cli and get an access to our eks.</p>
+<table>
+    <tbody>
+      <tr style="background-color: #cccccc;">
+        <td>
+<code>
+<b>$ aws eks --region "ca-central-1" update-kubeconfig --name demo-eks</b><br>
+  Added new context arn:aws:eks:ca-central-1:327173789368:cluster/demo-eks to /home/ansible/.kube/config<br>
+<b>$ kubectl cluster-info<br></b>
+Kubernetes control plane is running at https://7B8EB7D88E057E95AD8B521676B1201F.gr7.ca-central-1.eks.amazonaws.com<br>
+CoreDNS is running at https://7B8EB7D88E057E95AD8B521676B1201F.gr7.ca-central-1.eks.amazonaws.com/api/v1/namespaces/kube-system/services/kube-dns:dns/proxy<br>
+</code>
+        </td>
+      </tr>
+    </tbody>
+</table>
+<p>Not bad, not bad... Move on, we have to create Dockerfile for building docker-image and Jenkinsfile for pipeline.</p>

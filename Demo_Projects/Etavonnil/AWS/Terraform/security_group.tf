@@ -1,32 +1,18 @@
 # https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/security_group
 #
-resource "aws_security_group" "allow_custom_ports" {
-  name        = "allow_custom_ports"
-  description = "Allow ports 22, 8080 and ICMP inbound traffic"
-  vpc_id      = module.vpc.vpc_id
+resource "aws_security_group" "jenkins" {
+  name        = "Dynamic Jenkins SG"
+  description = "Allow SSH, HTTP, HTTPS, 8080 inbound traffic"
+  # vpc_id      = module.vpc.vpc_id
 
-  ingress {
-    description      = "8080 from VPC"
-    from_port        = 8080
-    to_port          = 8080
-    protocol         = "tcp"
-    cidr_blocks      = ["0.0.0.0/0"]
-  }
-
-  ingress {
-    description      = "SSH from VPC"
-    from_port        = 22
-    to_port          = 22
-    protocol         = "tcp"
-    cidr_blocks      = ["0.0.0.0/0"]
-  }
-
-  ingress {
-    description      = "ICMP from VPC"
-    from_port        = 8
-    to_port          = 0
-    protocol         = "icmp"
-    cidr_blocks      = ["0.0.0.0/0"]
+  dynamic "ingress" {
+    for_each = ["22", "80", "443", "8080"]
+    content {
+      from_port        = ingress.value
+      to_port          = ingress.value
+      protocol         = "tcp"
+      cidr_blocks      = ["0.0.0.0/0"]
+    }
   }
 
   egress {
@@ -37,6 +23,6 @@ resource "aws_security_group" "allow_custom_ports" {
   }
 
   tags = {
-    Name = "allow_custom_ports"
+    Name = "jenkins_custom_ports"
   }
 }
