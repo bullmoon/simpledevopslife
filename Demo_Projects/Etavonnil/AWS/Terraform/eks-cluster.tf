@@ -19,12 +19,14 @@ module "eks" {
       name                          = "demo-grp-1"
       instance_type                 = var.instance_type
       additional_userdata           = ""
+      additional_security_group_ids = [aws_security_group.worker_group_mgmt.id]
       asg_desired_capacity          = 1
     },
     {
       name                          = "demo-grp-2"
       instance_type                 = var.instance_type
       additional_userdata           = ""
+      additional_security_group_ids = [aws_security_group.worker_group_mgmt.id]
       asg_desired_capacity          = 1
     },
   ]

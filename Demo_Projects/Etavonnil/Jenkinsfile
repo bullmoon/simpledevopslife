@@ -1,0 +1,13 @@
+pipeline {
+  agent {
+    any
+  }
+
+  stages {
+    stage ("Pull a repository from GitHub") {
+      steps {
+        git credentialsId: '1103b4e91e3512a1f669ddb470ed614b05', url: 'git@github.com:bullmoon/ILS-web.git'
+      }
+    }
+  }
+}
