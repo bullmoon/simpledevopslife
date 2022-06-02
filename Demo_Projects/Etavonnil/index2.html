@@ -1,0 +1,154 @@
+<head>
+    <b:skin>
+        <style>
+        P {
+         text-indent: 1.5em; /* Отступ первой строки */
+         text-align: justify; /* Выравнивание по ширине */
+        }
+        </style>
+    </b:skin>
+</head>
+<div class="separator" style="clear: both;"><a href="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEjLK3CsOiU2gSYZVmLuw0JJ621icHLp9eFj4IpQ5qHh5hV-af_DXWPqmf2_MHVSjNyaU8fufz09EVOitsNQsUFVR3VV_h8L544Ac1n6wnx5uxOe_PUfLmOW2Oh-EFLV1xn58cHT-vwTKdwAlqWetidW-FiaJ5dqQie0modVUoPwlUcgj-mwkb4FFyoXnA/s217/47w5k8z4g3.png" style="display: block; padding: 1em 0; text-align: center; "><img alt="" border="0" width="200" data-original-height="177" data-original-width="217" src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEjLK3CsOiU2gSYZVmLuw0JJ621icHLp9eFj4IpQ5qHh5hV-af_DXWPqmf2_MHVSjNyaU8fufz09EVOitsNQsUFVR3VV_h8L544Ac1n6wnx5uxOe_PUfLmOW2Oh-EFLV1xn58cHT-vwTKdwAlqWetidW-FiaJ5dqQie0modVUoPwlUcgj-mwkb4FFyoXnA/s200/47w5k8z4g3.png"/></a></div>
+<p><a href="https://simpledevopslife.blogspot.com/2022/05/post-interview-devops-home-test-article.html">Previous part</a></p>
+<p>(update) It would be more effectively to separate creating Jenkins EC2 and Cluster EKS.</p>
+<div class="separator" style="clear: both;"><a href="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEhPew76_zcTBZ5TfNumtsAaOSd9RdEvVD3oZQRw194ELajo8xeNCDebRJG6TX5zHnT46yebsdz6C56dn9HFWG8q9F6zd6YqerZ0duT9iMUn-PfDY0IqO0nQl0R1G1fME4YgLV82Va8RUXH7QnDXq13AcNnPswYAKNHxm6vQjPOaJGnvbkjKb-TOMCl29Q/s268/gnwy4pd3iw.png" style="display: block; padding: 1em 0px; text-align: center;"><img alt="" border="0" data-original-height="268" data-original-width="205" height="200" src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEhPew76_zcTBZ5TfNumtsAaOSd9RdEvVD3oZQRw194ELajo8xeNCDebRJG6TX5zHnT46yebsdz6C56dn9HFWG8q9F6zd6YqerZ0duT9iMUn-PfDY0IqO0nQl0R1G1fME4YgLV82Va8RUXH7QnDXq13AcNnPswYAKNHxm6vQjPOaJGnvbkjKb-TOMCl29Q/w153-h200/gnwy4pd3iw.png" width="153" /></a></div>
+<span><!--more--></span>
+<p>Meanwhile, don't forget to finish Jenkins server installation.</p>
+<div class="separator" style="clear: both;"><a href="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEilWpYV88vy-v9sttUVUmQYtqcE-kE67BilKkrEKlRjUcXQMXckgVyzjxM1ebq9aBKPrsJmNbNCUfbOjgTGtY_rJ5QELENmZwu0FV5srq-dvktp4RflAS-xtDwk3vXiFPolmPfspUSXZPmBc8h6923e9NmNRoitmqjIQAJ__Of3M5UALqhWgAHIPbE9qQ/s990/69x9h5cy.png" style="display: block; padding: 1em 0; text-align: center; "><img alt="" border="0" width="320" data-original-height="577" data-original-width="990" src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEilWpYV88vy-v9sttUVUmQYtqcE-kE67BilKkrEKlRjUcXQMXckgVyzjxM1ebq9aBKPrsJmNbNCUfbOjgTGtY_rJ5QELENmZwu0FV5srq-dvktp4RflAS-xtDwk3vXiFPolmPfspUSXZPmBc8h6923e9NmNRoitmqjIQAJ__Of3M5UALqhWgAHIPbE9qQ/s320/69x9h5cy.png"/></a></div>
+<p>It's time to deploy Kubernetes cluster.</p>
+  <table>
+  <tbody>
+    <tr style="background-color: #cccccc;">
+      <td>
+<code>
+<b>$ cat eks-cluster.tf<br></b>
+locals {<br>
+&nbsp;&nbsp;  cluster_name = "demo-eks"<br>
+}<br>
+module "eks" {<br>
+&nbsp;&nbsp;source          = "terraform-aws-modules/eks/aws"<br>
+&nbsp;&nbsp;version         = "17.24.0"<br>
+&nbsp;&nbsp;cluster_name    = local.cluster_name<br>
+&nbsp;&nbsp;cluster_version = "1.20"<br>
+&nbsp;&nbsp;subnets         = module.vpc.private_subnets<br>
+<br>
+&nbsp;&nbsp;vpc_id = module.vpc.vpc_id<br>
+<br>
+&nbsp;&nbsp;workers_group_defaults = {<br>
+  &nbsp;&nbsp;&nbsp;&nbsp;root_volume_type = "gp2"<br>
+&nbsp;&nbsp;}<br>
+<br>
+&nbsp;&nbsp;worker_groups = [<br>
+  &nbsp;&nbsp;&nbsp;&nbsp;{<br>
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;name                          = "demo-grp-1"<br>
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;instance_type                 = var.instance_type<br>
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;additional_userdata           = ""<br>
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;asg_desired_capacity          = 1<br>
+  &nbsp;&nbsp;&nbsp;&nbsp;},<br>
+  &nbsp;&nbsp;&nbsp;&nbsp;{<br>
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;name                          = "demo-grp-2"<br>
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;instance_type                 = var.instance_type<br>
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;additional_userdata           = ""<br>
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;asg_desired_capacity          = 1<br>
+  &nbsp;&nbsp;&nbsp;&nbsp;},<br>
+&nbsp;&nbsp;]<br>
+}<br>
+<br>
+data "aws_eks_cluster" "cluster" {<br>
+&nbsp;&nbsp;name = module.eks.cluster_id<br>
+}<br>
+<br>
+data "aws_eks_cluster_auth" "cluster" {<br>
+&nbsp;&nbsp;name = module.eks.cluster_id<br>
+}<br>
+</code>
+      </td>
+    </tr>
+  </tbody>
+</table>
+<p>Ok, now we have to install aws cli and get an access to our eks.</p>
+<table>
+    <tbody>
+      <tr style="background-color: #cccccc;">
+        <td>
+<code>
+<b>$ aws eks --region "ca-central-1" update-kubeconfig --name demo-eks</b><br>
+  Added new context arn:aws:eks:ca-central-1:327173789368:cluster/demo-eks to /home/ansible/.kube/config<br>
+<b>$ kubectl cluster-info<br></b>
+Kubernetes control plane is running at https://7B8EB7D88E057E95AD8B521676B1201F.gr7.ca-central-1.eks.amazonaws.com<br>
+CoreDNS is running at https://7B8EB7D88E057E95AD8B521676B1201F.gr7.ca-central-1.eks.amazonaws.com/api/v1/namespaces/kube-system/services/kube-dns:dns/proxy<br>
+</code>
+        </td>
+      </tr>
+    </tbody>
+</table>
+<p>Not bad, not bad... Move on, we have to create Dockerfile for building docker-image and Jenkinsfile for pipeline.</p>
+<table>
+  <tbody>
+    <tr style="background-color: #cccccc;">
+      <td>
+<code>
+<b>$ cat Dockerfile</b><br>
+# our base image<br>
+FROM nginx<br>
+LABEL maintainer="Mr. Jeck"<br>
+ENV cont /usr/share/nginx/html/<br>
+<br>
+# copy our application code<br>
+COPY ./content/ $cont<br>
+WORKDIR ${cont}<br>
+</code>
+      </td>
+    </tr>
+  </tbody>
+</table>
+<p>So, we have already had docker engine, an EKS cluster, management of the cluster, content on Github and account on Docker Hub. Accordingly, we can build a docker image, public it on Docker Hub and use it in deployment. Ok, let's create a Jenkinsfile</p>
+<p>But firstly, we've to create an access token on Docker hub and update Jenkince configuration.</p>
+<div class="separator" style="clear: both;"><a href="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEh0kDXCYRpOxMyNLqAQgHVtynevWoo3ULrAPpHNyVf0iOlO6hie8C_555hz0ziwnlFtMaBYZHr67w7520_KN0PuXNQBMZIXQoFWkGOsOZIrA2ea_6rhTsIalG9q83zlFk8dsHr71Qs0wntgh4Ebf5YXE_9E_wds_jmJ2S67mSZG68tzvn0C6rgB-8IFjg/s2964/3dw5prvi4t.png" style="display: block; padding: 1em 0px; text-align: center;"><img alt="" border="0" data-original-height="924" data-original-width="2964" height="125" src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEh0kDXCYRpOxMyNLqAQgHVtynevWoo3ULrAPpHNyVf0iOlO6hie8C_555hz0ziwnlFtMaBYZHr67w7520_KN0PuXNQBMZIXQoFWkGOsOZIrA2ea_6rhTsIalG9q83zlFk8dsHr71Qs0wntgh4Ebf5YXE_9E_wds_jmJ2S67mSZG68tzvn0C6rgB-8IFjg/w400-h125/3dw5prvi4t.png" width="400" /></a></div>
+<div class="separator" style="clear: both; text-align: center;"><iframe class="BLOG_video_class" allowfullscreen="" youtube-src-id="alQQ84M4CYU" width="320" height="266" src="https://www.youtube.com/embed/alQQ84M4CYU"></iframe></div>
+<div class="separator" style="clear: both;"><a href="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEg_p0iDzZzSYUK4xF66BPXlhaKVEnDBBGOqHzzljWt2ttnQ4RCUSDG9JibV3sDQCkVvu2GjMi08ki_RG9FswFSDKa-a-yZeJXGK6BMS7l5oWWOgKR-tZERDP673mGEX7VI8DdZfo9Ladphe5BsBOgCvgfnTnTMFLbynDnFQI7AuYQs9nIYxPNUIgezcmg/s682/vb7nr.png" style="display: block; padding: 1em 0; text-align: center; "><img alt="" border="0" width="400" data-original-height="42" data-original-width="682" src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEg_p0iDzZzSYUK4xF66BPXlhaKVEnDBBGOqHzzljWt2ttnQ4RCUSDG9JibV3sDQCkVvu2GjMi08ki_RG9FswFSDKa-a-yZeJXGK6BMS7l5oWWOgKR-tZERDP673mGEX7VI8DdZfo9Ladphe5BsBOgCvgfnTnTMFLbynDnFQI7AuYQs9nIYxPNUIgezcmg/s400/vb7nr.png"/></a></div>
+<table>
+  <tbody>
+    <tr style="background-color: #cccccc;">
+      <td>
+<code>
+<b>$ cat Jenkinsfile</b><br>
+pipeline {<br>
+&nbsp;&nbsp;environment {<br>
+      &nbsp;&nbsp;&nbsp;&nbsp;registry = 'bulldrive/demo'<br>
+      &nbsp;&nbsp;&nbsp;&nbsp;DOCKERHUB_CREDENTIALS = credentials('jenkins-dockerhub')<br>
+      &nbsp;&nbsp;&nbsp;&nbsp;SVN_REVISION = '1'<br>
+      &nbsp;&nbsp;&nbsp;&nbsp;NAMESPACE = 'nsdemo'<br>
+      &nbsp;&nbsp;&nbsp;&nbsp;DEPLOYMENT = 'ddemo'<br>
+&nbsp;&nbsp;}<br>
+&nbsp;&nbsp;agent any<br>
+&nbsp;&nbsp;options {<br>
+      &nbsp;&nbsp;&nbsp;&nbsp;buildDiscarder(logRotator(numToKeepStr: '5'))<br>
+  &nbsp;&nbsp;}<br>
+&nbsp;&nbsp;stages {<br>
+  &nbsp;&nbsp;&nbsp;&nbsp;stage ('Checkout Master branch') {<br>
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;steps {<br>
+      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;git branch: 'master',<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;git credentialsId: 'jenkins-github-demo',<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;url: 'git@github.com:bulldrive/postinterview.git'<br>
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+  &nbsp;&nbsp;&nbsp;&nbsp;stage ("Rollup k8s") {<br>
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;steps {<br>
+      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;sh 'kubectl -n $NAMESPACE rollout restart deployment'<br>
+      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;sh 'kubectl -n $NAMESPACE rollout status deployment $DEPLOYMENT'<br>
+      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;sh 'kubectl -n $NAMESPACE get svc'<br>
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+  &nbsp;&nbsp;&nbsp;&nbsp;}<br>
+&nbsp;&nbsp;}<br>
+}<br>
+</code>
+      </td>
+    </tr>
+  </tbody>
+</table>
+<p>Awesome! Good job. Bye for now.</p>
+<dl>
+  <dt>Source</dt>
+  <dd><a href=https://github.com/bulldrive/postinterview>https://github.com/bulldrive/postinterview</a></dd>
+  </dl>

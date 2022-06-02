@@ -1,0 +1,29 @@
+pipeline {
+  environment {
+        registry = 'bulldrive/demo'
+        DOCKERHUB_CREDENTIALS = credentials('jenkins-dockerhub')
+        SVN_REVISION = '1'
+        NAMESPACE = 'nsdemo'
+        DEPLOYMENT = 'ddemo'
+  }
+  agent any
+  options {
+    buildDiscarder(logRotator(numToKeepStr: '5'))
+  }
+  stages {
+    stage ('Checkout Master branch') {
+      steps {
+        git branch: 'master',
+          git credentialsId: 'jenkins-github-demo',
+          url: 'git@github.com:bulldrive/postinterview.git'
+      }
+    }
+    stage ("Rollup k8s") {
+      steps {
+        sh 'kubectl -n $NAMESPACE rollout restart deployment'
+        sh 'kubectl -n $NAMESPACE rollout status deployment $DEPLOYMENT'
+        sh 'kubectl -n $NAMESPACE get svc'
+      }
+    }
+  }
+}
