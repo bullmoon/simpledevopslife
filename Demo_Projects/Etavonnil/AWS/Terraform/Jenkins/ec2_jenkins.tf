@@ -28,11 +28,11 @@ resource "aws_instance" "jenkins" {
   tags = {
     Name = "Jenkins"
   }
-
+/*
   lifecycle {
       prevent_destroy = true
   }
-
+*/
   provisioner "remote-exec" {
     inline = ["echo 'Wait until SSH is ready'"]
     
@@ -45,7 +45,7 @@ resource "aws_instance" "jenkins" {
   }
 
   provisioner "local-exec" {
-    command = "ansible-playbook  -i ${aws_instance.jenkins.public_dns}, --private-key ${local.private_key_path} ../Ansible/apps.yaml"
+    command = "ansible-playbook  -i ${aws_instance.jenkins.public_dns}, --private-key ${local.private_key_path} ../../Ansible/apps.yaml"
   }
 
 }
