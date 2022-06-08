@@ -1,0 +1,145 @@
+<head>
+    <b:skin>
+      <style>
+        P {
+         text-indent: 1.5em; /* Отступ первой строки */
+         text-align: justify; /* Выравнивание по ширине */
+        }
+      </style>
+    </b:skin>
+  </head>
+  
+<p>Today I want to highlight some questions, I've recently got in pre-interview test.</p>
+<dl>
+    <dt>1) "You have several on-promise servers and would like to store your offsite backups on AWS. What fully managed backup service can you use to ship your backups to aws?"<br>
+    - Use Storage gateway.<br>
+    - Windows Server 2016 supports S3 as a target when using storage replicas.<br>
+    - Use the RDS console to force a reboot of the database instance so that the primary server becomes the master server again.<br>
+    - Sync files directly to S3 with the AWS CLI.</dt>
+    <dd>Amazon: "Back up your on-premises applications to the cloud using AWS Storage Gateway"<br>Customers use Storage Gateway to protect their on-premises applications and to reduce backup infrastructure and administration costs. They use Storage Gateway to back up files, applications, databases, and volumes to Amazon S3, Amazon S3 Glacier, Amazon S3 Glacier Deep Archive, and Amazon EBS – through files, volumes, snapshots, and virtual tapes in AWS. Some customers use Storage Gateway to seamlessly complement their existing storage infrastructure to offload and/or expand their on-premises storage capacity. Since there is no hardware procurement needed, these deployments are faster and shorter.</dd>
+</dl>
+
+<dl>
+    <dt>2) What data store provides a simple and quick way of storing basic user attributes in an object-based format?<br>
+    - Redshift<br>
+    - RDS for Oracle<br>
+    - DynamoDB<br>
+    - Neptune</dt>
+    <dd>Amazon: Amazon DynamoDB is a fully managed, serverless, key-value NoSQL database designed to run high-performance applications at any scale.</dd>
+</dl>
+
+<dl>
+    <dt>3) What service can host your Docker containers?<br>
+    - All of these services can host a Docker container.<br>
+    - Elastic compute cloud (EC2)<br>
+    - Elastic container Service (ECS)<br>
+    - Lightsail</dt>
+    <dd>Amazone: Amazon ECS is a fully managed container orchestration service that makes it easy for you to deploy, manage, and scale containerized applications.</dd>
+</dl>
+
+<dl>
+    <dt>4) What AWS services can help you automate your development pipiline for continuous integration and continouos deployment?<br>
+    - CodeDeploy<br>
+    - CodeBuild<br>
+    - all of these answers<br>
+    - CodePipeline</dt>
+    <dd>Amazon: AWS CodeBuild belongs to a family of AWS Code Services, which you can use to create complete, automated software release workflows for continuous integration and delivery (CI/CD). You can also integrate CodeBuild into your existing CI/CD workflow. For example, you can use CodeBuild as a worker node for your existing Jenkins server setup for distributed builds.</dd>
+</dl>
+
+<dl>
+    <dt>5) When designing a serverless web application using Lambda, what key concept must you factor into your design?<br>
+    - Serverless web applications run within the web browser of the user, so you will need to store any data the user changes directly in a database.<br>
+    - Lambda is stateless, so it won't remember who a user is in between requests.<br>
+    - Lambda does not use servers, so it can only return the same request to every user.<br>
+    - Lambda only allows you to write functions in JavaScript.</dt>
+    <dd>I think, that "Lambda is stateless, so it won't remember who a user is in between requests." is the right unswer.</dd>
+</dl>
+
+<dl>
+    <dt>6) A principle if DevOps is to view infrastructure as code. Which AWS service allow you to script your AWS ingrastructure?<br>
+    - AWS Service Catalog<br>
+    - CloudTrail<br>
+    - AWS config</dt>
+    - Cloud Formation
+    <dd>Amazon: AWS CloudFormation lets you model, provision, and manage AWS and third-party resources by treating infrastructure as code.</dd>
+</dl>
+
+
+<dl>
+    <dt>7) You have a large amount of files on your network-attached storage array that must be archived and maintained fot a period of 10 yers due to industry regulations. This data will be infrequently accessed but must be kept. What is the best AWS service for storing this data?<br>
+    - EBS<br>
+    - Snowball<br>
+    - EFS<br>
+    - S3 Glacier</dt>
+    <dd>Amazone: Amazon S3 Glacier is a secure, durable, and extremely low-cost Amazon S3 storage class for data archiving and long-term backup.</dd>
+</dl>
+
+<dl>
+    <dt>8) Which database is a NoSQL database type that can quickly store and retrieve key-value oairs?<br>
+    - RDS for MySQL<br>
+    - Aurora<br>
+    - Neptune<br>
+    - DynamoDB</dt>
+    <dd>Amazon: Amazon DynamoDB is a fully managed, serverless, key-value NoSQL database designed to run high-performance applications at any scale.</dd>
+</dl>
+
+<dl>
+    <dt>Which AWS service complies with the standards outlined in Payment Card Industry Data Security Standard (PCI DSS) Level 1 for the handling and transmission of credit card data?<br>
+    - Kinesis Data Streams<br>
+    - Simple Queue Service (SQS)<br>
+    - all of these answers<br>
+    - API Gateway</dt>
+    <dd>All of these answers</dd>
+</dl>
+
+<dl>
+    <dt>10) For your AWS root account, you have generated a random password of the maximum allowed lenght and included special characters. Which additional steps should you take to secure your AWS root account?<br>
+    - Create an AIM role for administrator with the highest privileges and do not use the root account in day-to-day operations. Enable two-factor authenticaation on the root account.<br>
+    - Create AIM accounts for your administrators and attach the AdministratorAccess policy to their accounts. Disable the root account in the users settings.<br>
+    - Create an AIM role for the account administrator with the highest privileges. Don't store the root password, but when the root account is needed, reset the password on the root account via email confirmation and repeat this procedure.<br>
+    - Store your randomly generated password in your organizational secrets database using a service such as 1Password or LastPass, and only grand access to this secret to the DevOps team.</dt>
+    <dd>Create an AIM role for administrator with the highest privileges and do not use the root account in day-to-day operations. Enable two-factor authenticaation on the root account.</dd>
+</dl>
+
+<dl>
+    <dt>Which communication channel does SNS not support natively?<br>
+    - push notification<br>
+    - email<br>
+    - SMS text message<br>
+    - automated phone call</dt>
+    <dd>Amazon:  Amazon SNS supports SMS text messaging to over 200 countries, mobile push notifications to Amazon, Android, Apple, Baidu, and Microsoft devices, and also email notifications.</dd>
+</dl>
+
+<dl>
+    <dt>What is the best practice for maintaining Windows EC2 instances and applying updates?<br>
+    - Use AWS System Manager Path Manager to find and patch instances that require updates during a set maintenance window.<br>
+    - Create maintenance schedule that an employee must fill out each week confirming a visual inspection of each instance was conducted and which patches were applied.<br>
+    - Install Windows Server Update Services on your primary Active Directory controller.<br>
+    - Turn on auto Update in Windows Update on each EC2 that is launched, or create your own AMI with this feature enabled and launch all of your EC2 instances from this AMI.</dt>
+    <dd>Amazon: Patch Manager, a capability of AWS Systems Manager, automates the process of patching managed nodes with both security related and other types of updates. You can use Patch Manager to apply patches for both operating systems and applications. (On Windows Server, application support is limited to updates for applications released by Microsoft.) You can use Patch Manager to install Service Packs on Windows nodes and perform minor version upgrades on Linux nodes.</dd>
+</dl>
+
+<dl>
+    <dt>13) When using AWS for research and development ahead of a planned migration, how do you prevent unexpected increases or spikes in the billihg?</dt>
+    <dd></dd>
+</dl>
+
+<dl>
+    <dt>You are an application configured to stream media to its clients on TCP ports 3380-3384, 3386-3388, and 3390. The inbond tab below shows three incoming security group policies attached to this instance. Which policy should you use?</dt>
+    <dd></dd>
+</dl>
+
+<dl>
+    <dt></dt>
+    <dd></dd>
+</dl>
+
+<dl>
+    <dt></dt>
+    <dd></dd>
+</dl>
+
+<dl>
+    <dt></dt>
+    <dd></dd>
+</dl>
