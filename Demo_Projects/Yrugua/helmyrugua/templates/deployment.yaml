@@ -1,0 +1,66 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: backend
+  namespace: {{ .Release.Namespace }}
+  labels:
+    app: {{ .Release.Name }}-webapp
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      app: {{ .Release.Name }}-webapp
+  template:
+    metadata:
+      labels:
+        app: {{ .Release.Name }}-webapp
+    spec:
+      containers:
+        - name: {{ .Chart.Name }}-pod
+          image: "{{ .Values.image.repository }}"
+          imagePullPolicy: Always
+          ports:
+            - name: flask
+              containerPort: 9003
+              protocol: TCP
+          env:
+          - name: VARYRUGUA
+            valueFrom:
+              configMapKeyRef:
+                name: app-config
+                key: VARYRUGUA
+      restartPolicy: Always
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Release.Name }}-front
+  namespace: {{ .Release.Namespace }}
+  labels:
+    app: {{ .Release.Name }}-proxy
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      app: {{ .Release.Name }}-proxy
+  template:
+    metadata:
+      labels:
+        app: {{ .Release.Name }}-proxy
+    spec:
+      containers:
+      - name: {{ .Chart.Name }}-nginx-proxy
+        image: lerenn/nginx-reverse-proxy
+        imagePullPolicy: IfNotPresent
+        ports:
+        - name: web
+          containerPort: 80
+        volumeMounts:
+        - name: nginx-proxy
+          mountPath: /etc/nginx/sites-available
+      restartPolicy: Always
+      volumes:
+      - name: nginx-proxy
+        configMap:
+          name: nginx-proxy-cm

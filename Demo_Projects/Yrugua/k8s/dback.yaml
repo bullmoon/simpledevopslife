@@ -1,0 +1,39 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: backend
+  namespace: yr
+  labels:
+    app: webapp
+    project: yrugua
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      project: yrugua
+      app: webapp
+  template:
+    metadata:
+      labels:
+        project: yrugua
+        app: webapp
+    spec:
+      containers:
+      - name: yrugua
+        image: bulldrive/yrugua:dev
+        imagePullPolicy: Always
+        resources:
+          limits:
+            memory: 256Mi
+            cpu: "1"
+          requests:
+            memory: 128Mi
+            cpu: "0.2"
+        ports:
+        - containerPort: 9003
+        env:
+          - name: VARYRUGUA
+            valueFrom:
+              configMapKeyRef:
+                name: app-config
+                key: VARYRUGUA

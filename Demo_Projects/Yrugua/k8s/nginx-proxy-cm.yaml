@@ -1,0 +1,15 @@
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: nginx-proxy-cm
+  namespace: yr
+data:
+  default: |
+    server {
+      listen 80;
+
+      location / {
+        proxy_pass http://10.108.167.69:9003;
+      }
+    }
