@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: srv-back
+  namespace: yr
+spec:
+  selector:
+    app: webapp
+    project: yrugua
+  ports:
+    - name      : app-listener
+      port      : 9003  # Port on Load Balancer
+      targetPort: 9003  # Port on POD
+  type: ClusterIP

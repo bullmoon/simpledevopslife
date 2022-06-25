@@ -1,0 +1,453 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Pre-Interview DevOps task (Microservice on Kubernetes)</title>
+	<b:skin>
+    	<style>
+      		P {
+       			text-indent: 1.5em;
+       			text-align: justify;
+      		}
+    	</style>
+  	</b:skin>
+</head>
+<body>
+<div class="separator" style="clear: both;"><a href="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEjY71QLxMrZUv4-Xoxtnlv60ijkTZXeQAosw-zoWbDSdHG962d-HCqtkgqTyxkSKLRFKNoBqfXhpEe7PRu1GH66a8vYYUaEOQAILtPMYki5ir59w4pc_OCoIk9IUiyA8fJAzFY0913V8mqEG6oSta_FqNKVD7zu_sDD2-1BSgT6EiOr5gtyyeasRpyf2A/s320/2hybx8sd.png" style="display: block; padding: 1em 0; text-align: center; "><img alt="" border="0" width="200" data-original-height="123" data-original-width="320" src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEjY71QLxMrZUv4-Xoxtnlv60ijkTZXeQAosw-zoWbDSdHG962d-HCqtkgqTyxkSKLRFKNoBqfXhpEe7PRu1GH66a8vYYUaEOQAILtPMYki5ir59w4pc_OCoIk9IUiyA8fJAzFY0913V8mqEG6oSta_FqNKVD7zu_sDD2-1BSgT6EiOr5gtyyeasRpyf2A/s200/2hybx8sd.png"/></a></div>
+<dl>
+  <dt>Prerequisites</dt>
+  <dd>- Modern programming language (Python / Go preferred, but use whatever you are comfortable with)</dd>
+  <dd>- IDE</dd>
+  <dd>- Docker</dd>
+  <dd>- Local Kubernetes cluster and kubectl (optional, but we expect the configuration files or helm chart to work, so better test it somewhere)</dd>
+  <dd>- Helm (optional, bonus)</dd>
+  <dd>- Public git account</dd>
+  <span><!--more--></span>
+  <dt>The task</dt>
+  <dd><a href="#zprgmxt5">- Create a function that returns the value of “MY_ENVIRONMENT_VARIABLE”.</a>
+  		<ul>
+  			<li><a href="#ho8kadyn">A test for this function is a bonus</a></li>
+  			<li>Create a rest api server</li>
+  			<li>Expose a GET api on route “/get_variable” that calls the function above and return result {“variable”: <the environment variable value>}.
+				<ul>
+      				<li>Returning 500 if the environment variable doesn’t exists is a bonus</li>
+    			</ul>
+  			</li>
+  			<li>Expose a GET api on route “/healthy” that returns {“status”: “ok”}</li>
+		</ul>
+  </dd>
+	<dd><a href="#i2c4egac">- Wrap the above in a docker container. When the container is running, the service should run within it</a></dd>
+	<dd><a href="#mgqd484t">- Create the configurations for deploying the container above to kubernetes</a>
+		<ul>
+			<li><a href="#myf3urni">The environment variable should be in a configmap and used by the container</a></li>
+		</ul>
+	</dd>
+  <dt>The requirements</dt>
+  <dd>- The task should be received as a git repository (all public git providers are accepted)</dd>
+  <dd>- The repo should contain a Dockerfile with everything that is needed for the code to run properly</dd>
+  <dd>- The repo should contain kubernetes configuration yamls
+  	<ul>
+  		<li>The container should be accessible at http://microservice inside kubernetes, so that http://microservice/get_variable will return the response mentions abovel</li>
+  		<li>helm chart is prefered (bonus)</li>
+  	</ul>
+  </dd>
+  <dd>- The repo can contain tests for the code (bonus)</dd>
+  <dd>- The repo should contain a README file
+  	<ul>
+  		<li>How to run the project</li>
+  		<li>How to build and run the container</li>
+  		<li>How to run tests (bonus)</li>
+  		<li>How to deploy it to kubernetes</li>
+  	</ul>
+  </dd>
+</dl>
+<p>Ok, let's get started.</p>
+<h5 id="zprgmxt5">Create a function that returns the value of "MY_ENVIRONMENT_VARIABLE".</h5>
+<p>First, create a directory for the project</p>
+<table>
+    <tbody>
+      <tr style="background-color: #cccccc;">
+        <td>
+<code>
+$ <b>mkdir -p yrugua_project/content; cd $_</b><br>
+$ <b>cat app.py</b><br>
+from flask import Flask<br>
+import os<br>
+<br>
+app = Flask(__name__)<br>
+<br>
+@app.route("/")<br>
+def well_come():<br>
+&nbsp;&nbsp;return "try \"/get_variable\" or \"/healthy\""<br>
+<br>
+@app.route("/get_variable")<br>
+def get_variable():<br>
+&nbsp;&nbsp;varyr = os.environ.get("VARYRUGUA")<br>
+&nbsp;&nbsp;if varyr == '500':<br>
+&nbsp;&nbsp;&nbsp;&nbsp;return "Wrong variable! (value is 500)"<br>
+&nbsp;&nbsp;elif varyr:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;return varyr<br>
+&nbsp;&nbsp;else:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;return '500'<br>
+<br>
+@app.route("/healthy")<br>
+def healthy():<br>
+&nbsp;&nbsp;return "status: OK"<br>
+<br>
+if __name__ == "__main__":<br>
+&nbsp;&nbsp;app.run(debug=True)<br>
+</code>
+        </td>
+      </tr>
+    </tbody>
+</table>
+<h5 id="ho8kadyn">A test for this function is a bonus</h5>
+<p>The function is going to work correctly if the variable is defined, and will fail otherwise. In my view, <b>Pytest</b> is appropriate for that task.</p>
+<table>
+    <tbody>
+      <tr style="background-color: #cccccc;">
+        <td>
+<code>
+$ <b>cat test_app.py</b><br>
+from app import *<br>
+<br>
+def test_var_value_exists():<br>
+&nbsp;&nbsp;assert get_variable() != '500', "The variable is undefined"<br>
+</code>
+        </td>
+      </tr>
+    </tbody>
+</table>
+<p>Let's take a look how it works</p>
+<table>
+    <tbody>
+      <tr style="background-color: #cccccc;">
+        <td>
+<code>
+$ <b>export VARYRUGUA="MY_ENVIRONMENT_VARIABLE"; printenv VARYRUGUA; pytest content/</b><br>
+<br>
+$ <b>export VARYRUGUA="500"; printenv VARYRUGUA; pytest content/</b><br>
+<br>
+$ <b>unset VARYRUGUA; printenv VARYRUGUA; pytest content/</b><br>
+</code>
+        </td>
+      </tr>
+    </tbody>
+</table>
+<h5 id="i2c4egac">Wrap the above in a docker container</h5>
+<p>According to create a REST API server I'm going to use Python-based Docker image with Flask.</p>
+<p>Compose the Dockerfile</p>
+<table>
+    <tbody>
+      <tr style="background-color: #cccccc;">
+        <td>
+<code>
+$ <b>cat Dockerfile</b><br>
+# Base image<br>
+FROM python:3.8<br>
+LABEL maintainer="VV"<br>
+LABEL version=$TAG<br>
+<br>
+ENV forkfolder /app<br>
+WORKDIR ${forkfolder}<br>
+<br>
+COPY requirements.txt /tmp/requirements.txt<br>
+RUN pip install --no-cache-dir --upgrade -r /tmp/requirements.txt<br>
+<br>
+COPY content/ ${forkfolder}<br>
+<br>
+ENTRYPOINT [ "gunicorn", "--bind", "0.0.0.0:9003", "app:app" ]<br>
+</code>
+        </td>
+      </tr>
+    </tbody>
+</table>
+<p>I would like to build Docker images with script, like following:</p>
+<table>
+    <tbody>
+      <tr style="background-color: #cccccc;">
+        <td>
+<code>
+$ <b>cat dockerbuild.sh</b><br>
+#!/bin/bash<br>
+clear<br>
+DOCKERHUB="bulldrive"<br>
+IMGNAME="yrugua"<br>
+export TAG="dev"<br>
+<br>
+docker --log-level "debug" build --tag $DOCKERHUB/$IMGNAME:$TAG .<br>
+<br>
+echo "***********************"<br>
+echo "image created:"<br>
+echo $DOCKERHUB/$IMGNAME:$TAG<br>
+echo "***********************"<br>
+<br>
+# Stop the previous container<br>
+# docker stop $(docker ps --format '{{.Names}}')<br>
+<br>
+# Remove all inactive containers<br>
+# docker rm $(docker ps -aq)<br>
+<br>
+# Run the built container<br>
+docker run -d -p 9003:9003 $DOCKERHUB/$IMGNAME:$TAG<br>
+<br>
+# Debug<br>
+# docker exec $(docker ps --latest --format '{{.Names}}') netstat -l<br>
+docker logs $(docker ps --latest --format '{{.Names}}')<br>
+</code>
+        </td>
+      </tr>
+    </tbody>
+</table>
+<h5 id="mgqd484t">Create the configurations for deploying the container above to kubernetes</h5>
+<p>I have already had a local Kubernetes Cluster and going to deploy the app into it. Moreover, I'll deploy nginx server as a reverse-proxy for convenience.</p>
+<div class="separator" style="clear: both;"><a href="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEjP27aUSVTugDrThggSg34IZK8k6tXrJDJvZjKFPiU00eZbsgkK8sRythef3F5oE9aQZOkOYaBkIlD22cX94uNNXqE-tnySEtKm1qP10k6psWYGvGjQbKPqT7EQOKwyKohlU817Fx88fdx9C9sGn2COqrgSYWNSuRWOlXR5fhizLhx34CFYIflXmXYyDA/s702/vgb8ekx5.jpg" style="display: block; padding: 1em 0; text-align: center; "><img alt="" border="0" width="400" data-original-height="308" data-original-width="702" src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEjP27aUSVTugDrThggSg34IZK8k6tXrJDJvZjKFPiU00eZbsgkK8sRythef3F5oE9aQZOkOYaBkIlD22cX94uNNXqE-tnySEtKm1qP10k6psWYGvGjQbKPqT7EQOKwyKohlU817Fx88fdx9C9sGn2COqrgSYWNSuRWOlXR5fhizLhx34CFYIflXmXYyDA/s400/vgb8ekx5.jpg"/></a></div>
+<p id="myf3urni">In the requirements said, I should use Configmap and Helm. OK, let's go.</p>
+<table>
+    <tbody>
+      <tr style="background-color: #cccccc;">
+        <td>
+<code>
+$ <b>tree helmyrugua/</b><br>
+helmyrugua/<br>
+|-- Chart.yaml<br>
+|-- templates<br>
+|&nbsp;&nbsp;&nbsp;|-- configmaps.yaml<br>
+|&nbsp;&nbsp;&nbsp;|-- deployment.yaml<br>
+|&nbsp;&nbsp;&nbsp;`-- service.yaml<br>
+`-- values.yaml<br>
+<br>
+1 directory, 5 files<br>
+</code>
+        </td>
+      </tr>
+    </tbody>
+</table>
+<p></p>
+<table>
+    <tbody>
+      <tr style="background-color: #cccccc;">
+        <td>
+<code>
+$ <b>cat configmaps.yaml</b><br>
+apiVersion: v1<br>
+kind: ConfigMap<br>
+metadata:<br>
+&nbsp;&nbsp;name: app-config<br>
+&nbsp;&nbsp;namespace: {{ .Release.Namespace }}<br>
+&nbsp;&nbsp;labels:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;app: {{ .Release.Name }}-webapp<br>
+data:<br>
+&nbsp;&nbsp;VARYRUGUA: "MY_ENVIRONMENT_VARIABLE"<br>
+immutable: false<br>
+---<br>
+apiVersion: v1<br>
+kind: ConfigMap<br>
+metadata:<br>
+&nbsp;&nbsp;name: nginx-proxy-cm<br>
+&nbsp;&nbsp;namespace: {{ .Release.Namespace }}<br>
+data:<br>
+&nbsp;&nbsp;default: |<br>
+&nbsp;&nbsp;&nbsp;&nbsp;server {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;listen 80;<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;location / {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;proxy_pass http://srv-back:9003;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+immutable:  false<br>
+</code>
+        </td>
+      </tr>
+    </tbody>
+</table>
+<p>Next one is Deployment</p>
+<table>
+    <tbody>
+      <tr style="background-color: #cccccc;">
+        <td>
+<code>
+$ <b>cat deployment.yaml</b><br>
+apiVersion: apps/v1<br>
+kind: Deployment<br>
+metadata:<br>
+&nbsp;&nbsp;name: backend<br>
+&nbsp;&nbsp;namespace: {{ .Release.Namespace }}<br>
+&nbsp;&nbsp;labels:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;app: {{ .Release.Name }}-webapp<br>
+spec:<br>
+&nbsp;&nbsp;replicas: {{ .Values.replicaCount }}<br>
+&nbsp;&nbsp;selector:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;matchLabels:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;app: {{ .Release.Name }}-webapp<br>
+&nbsp;&nbsp;template:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;metadata:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;labels:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;app: {{ .Release.Name }}-webapp<br>
+&nbsp;&nbsp;&nbsp;&nbsp;spec:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;containers:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;- name: {{ .Chart.Name }}-pod<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;image: "{{ .Values.image.repository }}"<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;imagePullPolicy: Always<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ports:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;- name: flask<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;containerPort: 9003<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;protocol: TCP<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;env:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;- name: VARYRUGUA<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;valueFrom:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;configMapKeyRef:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;name: app-config<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;key: VARYRUGUA<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;restartPolicy: Always<br>
+<br>
+---<br>
+apiVersion: apps/v1<br>
+kind: Deployment<br>
+metadata:<br>
+&nbsp;&nbsp;name: {{ .Release.Name }}-front<br>
+&nbsp;&nbsp;namespace: {{ .Release.Namespace }}<br>
+&nbsp;&nbsp;labels:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;app: {{ .Release.Name }}-proxy<br>
+spec:<br>
+&nbsp;&nbsp;replicas: {{ .Values.replicaCount }}<br>
+&nbsp;&nbsp;selector:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;matchLabels:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;app: {{ .Release.Name }}-proxy<br>
+&nbsp;&nbsp;template:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;metadata:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;labels:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;app: {{ .Release.Name }}-proxy<br>
+&nbsp;&nbsp;&nbsp;&nbsp;spec:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;containers:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;- name: {{ .Chart.Name }}-nginx-proxy<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;image: lerenn/nginx-reverse-proxy<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;imagePullPolicy: IfNotPresent<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ports:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;- name: web<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;containerPort: 80<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;volumeMounts:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;- name: nginx-proxy<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;mountPath: /etc/nginx/sites-available<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;restartPolicy: Always<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;volumes:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;- name: nginx-proxy<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;configMap:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;name: nginx-proxy-cm<br>
+</code>
+        </td>
+      </tr>
+    </tbody>
+</table>
+<p>Last one is service.</p>
+<table>
+    <tbody>
+      <tr style="background-color: #cccccc;">
+        <td>
+<code>
+$ <b>cat service.yaml</b><br>
+apiVersion: v1<br>
+kind: Service<br>
+metadata:<br>
+&nbsp;&nbsp;name: srv-back<br>
+&nbsp;&nbsp;namespace: {{ .Release.Namespace }}<br>
+&nbsp;&nbsp;labels:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;app: {{ .Release.Name }}-webapp<br>
+spec:<br>
+&nbsp;&nbsp;type: ClusterIP<br>
+&nbsp;&nbsp;ports:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;- targetPort: 9003<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;port: 9003<br>
+&nbsp;&nbsp;selector:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;app: {{ .Release.Name }}-webapp<br>
+<br>
+---<br>
+apiVersion: v1<br>
+kind: Service<br>
+metadata:<br>
+&nbsp;&nbsp;name: microservice<br>
+&nbsp;&nbsp;namespace: {{ .Release.Namespace }}<br>
+spec:<br>
+&nbsp;&nbsp;selector:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;app: {{ .Release.Name }}-proxy<br>
+&nbsp;&nbsp;ports:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;- name      : app-listener<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;port      : 80  # Port on Load Balancer<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;targetPort: 80  # Port on POD<br>
+&nbsp;&nbsp;type: LoadBalancer<br>
+</code>
+        </td>
+      </tr>
+    </tbody>
+</table>
+<p>Great, the finishing touch - values.</p>
+<table>
+    <tbody>
+      <tr style="background-color: #cccccc;">
+        <td>
+<code>
+$ <b>cat values.yaml</b><br>
+# Default values for helmyrugua.<br>
+# This is a YAML-formatted file.<br>
+# Declare variables to be passed into your templates.<br>
+<br>
+replicaCount: 1<br>
+<br>
+image:<br>
+&nbsp;&nbsp;repository: bulldrive/yrugua:dev<br>
+&nbsp;&nbsp;pullPolicy: IfNotPresent<br>
+<br>
+service:<br>
+&nbsp;&nbsp;type: ClusterIP<br>
+&nbsp;&nbsp;port: 9003<br>
+<br>
+configMapKeyRef:<br>
+&nbsp;&nbsp;name: app-config<br>
+&nbsp;&nbsp;key: VARYRUGUA<br>
+</code>
+        </td>
+      </tr>
+    </tbody>
+</table>
+<p>So, it's time to deploy it...</p>
+<table>
+    <tbody>
+      <tr style="background-color: #cccccc;">
+        <td>
+<code>
+$ <b>helm install yrugua . -f values.yaml --namespace yrugua</b><br>
+</code>
+        </td>
+      </tr>
+    </tbody>
+</table>
+<p>And test it.</p>
+<table>
+    <tbody>
+      <tr style="background-color: #cccccc;">
+        <td>
+<code>
+$ <b>curl 10.11.12.13/get_variable</b><br>
+MY_ENVIRONMENT_VARIABLE
+<br>
+$ <b>curl 10.11.12.13/healthy</b><br>
+status: OK
+<br>
+<br>
+$ <b>kubectl -n yrugua create job healthy --image=nginx:alpine \<br>
+-- curl http://microservice/healthy</b><br>
+<br>
+$ <b>kubectl -n yrugua logs healthy-rndxn</b><br>
+status: OK
+<br>
+$ <b>kubectl -n yrugua delete job healthy</b><br>
+</code>
+        </td>
+      </tr>
+    </tbody>
+</table>
+<p>Now, we can change the variable <b>VARYRUGUA</b> in <b>configmaps.yaml</b> and recreate the application pod.</p>
+<p>That's all, bye for now.</p>
+</body>
+</html>

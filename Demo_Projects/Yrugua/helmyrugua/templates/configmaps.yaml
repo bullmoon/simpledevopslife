@@ -1,0 +1,26 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: app-config
+  namespace: {{ .Release.Namespace }}
+  labels:
+    app: {{ .Release.Name }}-webapp
+data:
+  VARYRUGUA: "MY_ENVIRONMENT_VARIABLE"
+immutable: false
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: nginx-proxy-cm
+  namespace: {{ .Release.Namespace }}
+data:
+  default: |
+    server {
+      listen 80;
+
+      location / {
+        proxy_pass http://srv-back:9003;
+      }
+    }
+immutable:  false

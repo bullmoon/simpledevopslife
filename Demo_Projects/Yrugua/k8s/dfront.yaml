@@ -1,0 +1,31 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nginx-proxy
+  namespace: yr
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: app-proxy
+  template:
+    metadata:
+      labels:
+        app: app-proxy
+    spec:
+      containers:
+      - name: nginx-http-proxy
+        image: lerenn/nginx-reverse-proxy
+        imagePullPolicy: IfNotPresent
+        ports:
+        - name: web
+          containerPort: 80
+        volumeMounts:
+        - name: nginx-proxy
+          mountPath: /etc/nginx/sites-available
+      restartPolicy: Always
+      volumes:
+      - name: nginx-proxy
+        configMap:
+          name: nginx-proxy-cm
