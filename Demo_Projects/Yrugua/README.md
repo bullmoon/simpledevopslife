@@ -14,9 +14,9 @@
   - the second way
     * you can use the script dockerbuild.sh
 3. Test for the function
-  - export VARYRUGUA="MY_ENVIRONMENT_VARIABLE"; printenv | grep VARYRUGUA; pytest content/
-  - export VARYRUGUA="500"; printenv | grep VARYRUGUA; pytest content/
-  - unset VARYRUGUA; printenv | grep VARYRUGUA; pytest content/
+  - export VARYRUGUA="MY_ENVIRONMENT_VARIABLE"; printenv VARYRUGUA; pytest content/
+  - export VARYRUGUA="500"; printenv VARYRUGUA; pytest content/
+  - unset VARYRUGUA; printenv VARYRUGUA; pytest content/
 4. How to deploy it to kubernetes
   - the first way (kubectl)
     * kubectl apply -f k8s/
