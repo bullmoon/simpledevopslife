@@ -11,7 +11,7 @@ def well_come():
 def get_variable():
     varyr = os.environ.get("VARYRUGUA")
     if varyr == '500':
-        return "Wrong variable! (value is 500)"
+        return "Wrong environment! (value is 500)"
     elif varyr:
         return varyr
     else:
